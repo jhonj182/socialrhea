@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block contenido %}
+        <!-- Page Content -->
+        <div class="page-content">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+<div class="container">
+<div id="user-view" class="user-grid-view">
+  <div class="row gutters-20">
+      {% if respuestas %}
+        {% for respuesta in respuestas %}
+          <div class="col-xl-3 col-lg-4 col-md-6">
+              <div class="widget-author">
+                  <div class="author-heading">
+                      <div class="cover-img">
+                          <img src="{{ respuesta.imgdestacada }}" alt="cover">
+                      </div>
+                      <div class="profile-img">
+                          <a href="user-friends.html#">
+                              <img src="{{ respuesta.img }}" width="150" height="150" alt="author">
+                          </a>
+                      </div>
+                      <div class="profile-name">
+                          <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.nombre}}</a></h4>
+                          <div class="author-location">{{respuesta.pais}}</div>
+                      </div>
+                  </div>
+                  <ul class="author-badge">
+                      <li><a href="user-friends.html#" class="bg-salmon-gradient"><i class="icofont-star"></i></a></li>
+                      <li><a href="user-friends.html#" class="bg-amethyst-gradient"><i class="icofont-ui-play"></i></a></li>
+                      <li><a href="user-friends.html#" class="bg-sun-gradient"><i class="icofont-squirrel"></i></a></li>
+                      <li><a href="user-friends.html#" class="bg-jungle-gradient"><i class="icofont-rocket-alt-1"></i></a></li>
+                  </ul>
+                  <ul class="author-statistics">
+                      <li>
+                          <a href="user-friends.html#"><span class="item-number">30</span> <span class="item-text">POSTS</span></a>
+                      </li>
+                      <li>
+                          <a href="user-friends.html#"><span class="item-number">12</span> <span class="item-text">COMMENTS</span></a>
+                      </li>
+                      <li>
+                          <a href="user-friends.html#"><span class="item-number">1,125</span> <span class="item-text">VIEWS</span></a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+        {% endfor %}
+      {% else %}
+          <p class="error">Ningun usuario coincide con su criterio de búsqueda</p>
+      {% endif %}
+
+    </div>
+  <div class="pagination">
+      <ul>
+          <li><a href="user-friends.html#" class="active">1</a></li>
+          <li><a href="user-friends.html#">2</a></li>
+      </ul>
+  </div>
+</div>
+</div>
+{% endblock %}

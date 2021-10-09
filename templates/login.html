@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+
+<head>
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SocialRhea | Login</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="media/favicon.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.min.css' ) }}">
+    <!-- Site Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="sticky-header">
+    <a href="login.html#wrapper" data-type="section-switch" class="scrollup">
+        <i class="icofont-bubble-up"></i>
+    </a>
+    <div id="wrapper" class="overflow-hidden">
+
+        <!--=====================================-->
+        <!--=          Header Menu Start       	=-->
+        <!--=====================================-->
+        <div class="login-page-wrap">
+            <div class="content-wrap">
+                <div class="login-content col-lg-4 ">
+                  <div class="card w-80">
+                    <div class="card-header">
+                      Rhea Americana
+                    </div>
+                    <div class="card-body">
+                      <blockquote class="blockquote mb-0">
+                        <h2>Bienvenidos</h2>
+                        <p>Esta es la red social de imágenes que estás buscando. Aquí podrías hacer amigos mientras compartes imágenes divertidas, calificar y hacer comentarios de las que más te gusten.</p>
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+                <div class="login-content col-lg-4 bg-center">
+
+                </div>
+                <div class="col-lg-4">  
+                <div class="login-content w-80">
+                    <div class="item-logo">
+                        <a href="login.html#"><img src="media/logo_large.png" alt="logo"></a>
+                    </div>
+                    <div class="login-form-wrap">
+                        <div class="tab-content">
+                            <div class="tab-pane login-tab fade show active" id="login-tab" role="tabpanel">
+                                <h3 class="item-title">Iniciar Sesión</h3>
+                                <section class="content">
+                                  {% with messages = get_flashed_messages(with_categories=true) %}
+                                    {% if messages %}
+                                      <ul class=flashes>
+                                      {% for category, message in messages %}
+                                        <li class="{{ category }}">{{ message }}</li>
+                                      {% endfor %}
+                                      </ul>
+                                    {% endif %}
+                                  {% endwith %}
+                                </section>
+                                <form action="/" method="POST" class="js-loginform">
+                                  {{ csrf_token }}
+                                    <div class="form-group">
+                                        <label for="email" class="sr-only">Usuario</label>
+                                        <input type="text" class="form-control js-user" id="email" name="login-email" placeholder="Ingrese Usuario o Email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="sr-only">Contraseña</label>
+                                        <input type="password" class="form-control js-pass" id="password" name="login-password" placeholder="Password" required>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="validationFormCheck2">
+                                            <label class="form-check-label" for="validationFormCheck2">Recuérdame</a></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" name="login-btn" class="submit-btn" value="Acceder">
+                                    </div>
+                                    <div class="form-group reset-password">
+                                      <a href="login.html#">¿Olvidaste tu contraseña?</a>
+                                  </div>
+                                </form>
+                                <h3 class="item-title mt-5">Nuevo Usuario</h3>
+                                <div class="account-create">
+                                <a class="btn btn-primary submit-btn link" href="#">Crear Una Cuenta</a>
+                    	</div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!--=====================================-->
+        <!--=      Header Search Start          =-->
+        <!--=====================================-->
+        <div id="header-search" class="header-search">
+            <button type="button" class="close">×</button>
+            <form class="header-search-form">
+                <input type="search" value="" placeholder="Search here..." />
+                <button type="submit" class="search-btn">
+                    <i class="flaticon-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- Jquery Js -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+
+    <!-- Site Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js' ) }}"></script>
+</body>
+
+</html>
