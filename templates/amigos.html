@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="page-content">
+
+  <!--=====================================-->
+  <!--=        Newsfeed  Area Start       =-->
+  <!--=====================================-->
+  <div class="container">
+      <!-- Banner Area Start -->
+      <div class="banner-user" style="background-image: url('{{ usuario.imgdestacada }}');">
+          <div class="banner-content">
+              <div class="media">
+                  <div class="item-img">
+                    <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
+                  </div>
+                  <div class="media-body">
+                      <h3 class="item-title">{{ usuario.nombre }}</h3>
+                      <div class="item-subtitle">{{ usuario.Pais }}</div>
+                      <ul class="item-social">
+                          <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
+                          <li><a href="user-about.html#" class="bg-twitter"><i class="icofont-twitter"></i></a></li>
+                          <li><a href="user-about.html#" class="bg-dribble"><i class="icofont-dribbble"></i></a></li>
+                          <li><a href="user-about.html#" class="bg-youtube"><i class="icofont-brand-youtube"></i></a></li>
+                          <li><a href="user-about.html#" class="bg-behance"><i class="icofont-behance"></i></a></li>
+                      </ul>
+                      <ul class="user-meta">
+                          <li>Posts: <span>30</span></li>
+                          <li>Comments: <span>12</span></li>
+                          <li>Views: <span>1.2k</span></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="block-box user-top-header">
+          <ul class="menu-list">
+              <li><a href="/profile/{{usuario.user}}">Sobre Mi</a></li>
+              <li><a href="/amigos/{{usuario.user}}">Amigos</a></li>
+              <li><a href="/fotos/{{usuario.user}}">Fotos</a></li>
+              <li><a href="/editarperfil/{{usuario.user}}">Editar Perfil</a></li>
+              <li>
+                  <div class="dropdown">
+                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                          ...
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                          <a class="dropdown-item" href="user-about.html#">Shop</a>
+                          <a class="dropdown-item" href="user-about.html#">Blog</a>
+                          <a class="dropdown-item" href="user-about.html#">Others</a>
+                      </div>
+                  </div>
+              </li>
+          </ul>
+      </div>
+      <div class="container">
+        <!-- Banner Area Start -->
+        <div class="newsfeed-banner content-bg-wrap" style="background: url(media/forums-forum.png)">
+            <div class="media">
+                <div class="item-icon">
+                    <i class="icofont-megaphone-alt"></i>
+                </div>
+                <div class="media-body">
+                    <h3 class="item-title">Bienvenido a Social Rhea</h3>
+                    <p>Mira lo que tus amigos compartieron hoy.</p>
+                </div>
+            </div>
+            <ul class="animation-img">
+                <li><img src="{{ url_for('static', filename='assets/img/shape_7.png')}}" alt="shape"></li>
+                <li data-sal="slide-up" data-sal-duration="500"><img src="{{ url_for('static', filename='assets/img/people_2.png')}}" alt="shape"></li>
+            </ul>
+        </div>
+                <!-- Page Content -->
+                <div class="page-content">
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <ul class=flashes>
+                    {% for category, message in messages %}
+                      <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+        <div class="container">
+        <div id="user-view" class="user-grid-view">
+          <div class="row gutters-20">
+              {% if respuestas %}
+                {% for respuesta in respuestas %}
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                      <div class="widget-author">
+                          <div class="author-heading">
+                              <div class="cover-img">
+                                  <img src="{{ respuesta.imgdestacada }}" alt="cover">
+                              </div>
+                              <div class="profile-img">
+                                  <a href="/">
+                                      <img src="{{ respuesta.img }}" width="150" height="150" alt="author">
+                                  </a>
+                              </div>
+                              <div class="profile-name">
+                                  <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.nombre}}</a></h4>
+                                  <div class="author-location">{{respuesta.pais}}</div>
+                              </div>
+                          </div>
+                          <ul class="author-badge">
+                              <li><a href="/" class="bg-salmon-gradient"><i class="icofont-star"></i></a></li>
+                              <li><a href="/" class="bg-amethyst-gradient"><i class="icofont-ui-play"></i></a></li>
+                              <li><a href="/" class="bg-sun-gradient"><i class="icofont-squirrel"></i></a></li>
+                              <li><a href="/" class="bg-jungle-gradient"><i class="icofont-rocket-alt-1"></i></a></li>
+                          </ul>
+                          <ul class="author-statistics">
+                              <li>
+                                  <a href="/"><span class="item-number">30</span> <span class="item-text">POSTS</span></a>
+                              </li>
+                              <li>
+                                  <a href="/"><span class="item-number">12</span> <span class="item-text">COMMENTS</span></a>
+                              </li>
+                              <li>
+                                  <a href="/"><span class="item-number">1,125</span> <span class="item-text">VIEWS</span></a>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                  <p class="error">Ningun usuario coincide con su criterio de búsqueda</p>
+              {% endif %}
+        
+            </div>
+          <div class="pagination">
+              <ul>
+                  <li><a href="/" class="active">1</a></li>
+                  <li><a href="/">2</a></li>
+              </ul>
+          </div>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

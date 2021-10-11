@@ -11,11 +11,20 @@
           <div class="banner-content">
               <div class="media">
                   <div class="item-img">
+                    {% if usuario and auth %}
                     <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
+                    {% else %}
+                    <img src="{{ res.img }}" width="125" height="125" alt="Chat">
+                    {% endif %}
                   </div>
                   <div class="media-body">
+                    {% if usuario and auth %}
                       <h3 class="item-title">{{ usuario.nombre }}</h3>
                       <div class="item-subtitle">{{ usuario.Pais }}</div>
+                    {% else %}
+                      <h3 class="item-title">{{ res.nombre }}</h3>
+                      <div class="item-subtitle">{{ res.Pais }}</div>
+                    {% endif %}
                       <ul class="item-social">
                           <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
                           <li><a href="user-about.html#" class="bg-twitter"><i class="icofont-twitter"></i></a></li>
@@ -34,10 +43,16 @@
       </div>
       <div class="block-box user-top-header">
           <ul class="menu-list">
-              <li><a href="#">Sobre Mi</a></li>
-              <li><a href="user-about.html#">Amigos</a></li>
-              <li><a href="user-about.html#">Fotos</a></li>
-              <li><a href="user-about.html#">Editar Perfil</a></li>
+            <li><a href="/profile/{{usuario.user}}">Sobre Mi</a></li>
+            <li><a href="/amigos/{{usuario.user}}">Amigos</a></li>
+            <li><a href="/fotos/{{usuario.user}}">Fotos</a></li>
+            {% if auth %}
+            <li><a href="/editarperfil/{{usuario.user}}">Editar Perfil</a></li>
+            {% else %}
+              {% if res %}
+                <li><a href="/agregaramigo/{{res.user}}">Agregar a mis amigos</a></li>
+              {% endif %}
+            {% endif %}
               <li>
                   <div class="dropdown">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -256,487 +271,41 @@
                 </div>
             </div>
             <div class="col-lg-4 widget-block widget-break-lg">
-                <div class="widget widget-author">
-                    <div class="author-heading">
-                        <div class="cover-img">
-                            <img src="{{ url_for('static', filename='assets/img/figure/shape_12.jpg')}}" alt="cover">
-                        </div>
-                        <div class="profile-img">
-                            <a href="#">
-                              <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
-                            </a>
-                        </div>
-                        <div class="profile-name">
-                            <h4 class="author-name"><a href="#">{{ usuario.nombre }}</a></h4>
-                            <div class="author-location">United State Of America</div>
+              <div class="widget widget-user-about">
+                <div class="widget-heading">
+                    <h3 class="widget-title">About Me</h3>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                            ...
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="user-about.html#">Close</a>
+                            <a class="dropdown-item" href="user-about.html#">Edit</a>
+                            <a class="dropdown-item" href="user-about.html#">Delete</a>
                         </div>
                     </div>
-                    <ul class="author-badge">
-                        <li><a href="#" class="bg-salmon-gradient"><i class="icofont-star"></i></a></li>
-                        <li><a href="#" class="bg-amethyst-gradient"><i class="icofont-ui-play"></i></a></li>
-                        <li><a href="#" class="bg-sun-gradient"><i class="icofont-squirrel"></i></a></li>
-                        <li><a href="#" class="profile-circle">+5</a></li>
-                    </ul>
-                    <ul class="author-statistics">
-                        <li>
-                            <a href="#"><span class="item-number">30</span> <span class="item-text">POSTS</span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="item-number">12</span> <span class="item-text">COMMENTS</span></a>
-                        </li>
-                        <li>
-                            <a href="#"><span class="item-number">1,125</span> <span class="item-text">VIEWS</span></a>
-                        </li>
-                    </ul>
                 </div>
-                <div class="widget widget-memebers">
-                    <div class="widget-heading">
-                        <h3 class="widget-title">Members</h3>
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                ...
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Close</a>
-                                <a class="dropdown-item" href="#">Edit</a>
-                                <a class="dropdown-item" href="#">Delete</a>
+                <div class="user-info">
+                    <p>Hi! My name is Rebeca Powel but some people may know me asserty GamePagla! I have a Newbike channel where I stream.</p>
+                    <ul class="info-list">
+                        <li><span>Joined:</span>24/12/2020</li>
+                        <li><span>E-mail:</span>info@gmail.com</li>
+                        <li><span>Address:</span>59 Street Neworkcity</li>
+                        <li><span>Phone:</span>+123 9856836</li>
+                        <li><span>Country:</span>USA</li>
+                        <li><span>Web:</span><a href="user-about.html#">www.rebeca.com</a></li>
+                        <li class="social-share"><span>Social:</span>
+                            <div class="social-icon">
+                                <a href="user-about.html#"><i class="icofont-facebook"></i></a>
+                                <a href="user-about.html#"><i class="icofont-twitter"></i></a>
+                                <a href="user-about.html#"><i class="icofont-dribbble"></i></a>
+                                <a href="user-about.html#"><i class="icofont-whatsapp"></i></a>
+                                <a href="user-about.html#"><i class="icofont-instagram"></i></a>
                             </div>
-                        </div>
-                    </div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#newest-member" role="tab" aria-selected="true">NEWEST</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#popular-member" role="tab" aria-selected="false">POPULAR</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#active-member" role="tab" aria-selected="false">ACTIVE</a>
                         </li>
                     </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="newest-member" role="tabpanel">
-                            <div class="members-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Aahat Akter</a></h4>
-                                        <div class="item-username">@Aahat </div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kazi Rahman</a></h4>
-                                        <div class="item-username">@Rahman</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Alia Karon</a></h4>
-                                        <div class="item-username">@Alia</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Masterero</a></h4>
-                                        <div class="item-username">@Master</div>
-                                        <div class="member-status offline"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="popular-member" role="tabpanel">
-                            <div class="members-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Aahat Akter</a></h4>
-                                        <div class="item-username">@Aahat </div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kazi Rahman</a></h4>
-                                        <div class="item-username">@Rahman</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Alia Karon</a></h4>
-                                        <div class="item-username">@Alia</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Masterero</a></h4>
-                                        <div class="item-username">@Master</div>
-                                        <div class="member-status offline"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="active-member" role="tabpanel">
-                            <div class="members-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Aahat Akter</a></h4>
-                                        <div class="item-username">@Aahat </div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kazi Rahman</a></h4>
-                                        <div class="item-username">@Rahman</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Alia Karon</a></h4>
-                                        <div class="item-username">@Alia</div>
-                                        <div class="member-status online"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Masterero</a></h4>
-                                        <div class="item-username">@Master</div>
-                                        <div class="member-status offline"><i class="icofont-check"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="widget widget-groups">
-                    <div class="widget-heading">
-                        <h3 class="widget-title">Groups</h3>
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                ...
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Close</a>
-                                <a class="dropdown-item" href="#">Edit</a>
-                                <a class="dropdown-item" href="#">Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#active-group" role="tab" aria-selected="true">ACTIVE</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#popular-group" role="tab" aria-selected="false">POPULAR</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#newest-group" role="tab" aria-selected="false">NEWEST</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="active-group" role="tabpanel">
-                            <div class="group-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_9.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kito Development</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_10.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Chef Express</a></h4>
-                                        <div class="item-member">4,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_11.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Photo Contest</a></h4>
-                                        <div class="item-member">1,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_12.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">WP Developers</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="popular-group" role="tabpanel">
-                            <div class="group-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_9.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kito Development</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_10.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Chef Express</a></h4>
-                                        <div class="item-member">4,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_11.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Photo Contest</a></h4>
-                                        <div class="item-member">1,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_12.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">WP Developers</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="newest-group" role="tabpanel">
-                            <div class="group-list">
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_9.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Kito Development</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_10.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Chef Express</a></h4>
-                                        <div class="item-member">4,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_11.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">Photo Contest</a></h4>
-                                        <div class="item-member">1,265 Members</div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img">
-                                        <a href="#">
-                                            <img src="media/groups/groups_12.jpg" alt="group">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="item-title"><a href="#">WP Developers</a></h4>
-                                        <div class="item-member">265 Members</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="widget widget-banner">
-                    <h3 class="item-title">Most Popular</h3>
-                    <div class="item-subtitle">Circle Application</div>
-                    <a href="#" class="item-btn">
-                        <span class="btn-text">Register Now</span>
-                        <span class="btn-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="21px" height="10px">
-                                <path fill-rule="evenodd" d="M16.671,9.998 L12.997,9.998 L16.462,6.000 L5.000,6.000 L5.000,4.000 L16.462,4.000 L12.997,0.002 L16.671,0.002 L21.003,5.000 L16.671,9.998 ZM17.000,5.379 L17.328,5.000 L17.000,4.621 L17.000,5.379 ZM-0.000,4.000 L3.000,4.000 L3.000,6.000 L-0.000,6.000 L-0.000,4.000 Z" />
-                            </svg>
-                        </span>
-                    </a>
-                    <div class="item-img">
-                        <img src="widget_banner_1.png" alt="banner">
-                    </div>
-                </div>
-                <div class="widget widget-memebers widget-activity">
-                    <div class="widget-heading">
-                        <h3 class="widget-title">Friends Activity</h3>
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                ...
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Close</a>
-                                <a class="dropdown-item" href="#">Edit</a>
-                                <a class="dropdown-item" href="#">Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="activity-list">
-                        <div class="media">
-                            <div class="item-img">
-                                <a href="#">
-                                    <img src="chat_10.jpg" alt="Chat">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="item-title">
-                                    <a href="#" class="author-name">Aahat Akter</a>
-                                    commented on Destroy Dex's
-                                    <a href="#" class="activity-link">Photo</a>
-                                </h4>
-                                <div class="activity-time">20 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="item-img">
-                                <a href="#">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="item-title">
-                                    <a href="#" class="author-name">Neko Bebop</a>
-                                    liked Marina
-                                    <a href="#" class="activity-link">Status</a>
-                                </h4>
-                                <div class="activity-time">15 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="item-img">
-                                <a href="#">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="item-title">
-                                    <a href="#" class="author-name">Neko Bebop</a>
-                                    commented on Destroy Dex's
-                                    <a href="#" class="activity-link">Photo</a>
-                                </h4>
-                                <div class="activity-time">20 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="item-img">
-                                <a href="#">
-                                    <img src="chat_6.jpg" alt="Chat">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="item-title">
-                                    <a href="#" class="author-name">Neko Bebop</a>
-                                    commented on Destroy Dex's
-                                    <a href="#" class="activity-link">Photo</a>
-                                </h4>
-                                <div class="activity-time">20 minutes ago</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
             </div>
         </div>
     </div>

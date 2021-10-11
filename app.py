@@ -22,8 +22,8 @@ lista_usuarios = {
   1 : {"user": "jhonTa","nombre" : "Jhon Jairo Tamayo Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
   2 : {"user": "simon","nombre" : "Simon Vallejo Valencia","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
   3 : {"user": "roberto","nombre" : "Jhon Jairo Tamayo Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  4 : {"user": "elpepe","nombre" : "Jhon Jairo Tamayo Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  5 : {"user": "carlos","nombre" : "Juana Lopez", "img" :"https://www.kindpng.com/picc/m/442-4426396_profile-picture-woman-circle-hd-png-download.png", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
+  4 : {"user": "elpepe","nombre" : "El Pepe Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
+  5 : {"user": "simon","nombre" : "Juana simona Lopez", "img" :"https://www.kindpng.com/picc/m/442-4426396_profile-picture-woman-circle-hd-png-download.png", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
   6 : {"user": "simon","nombre" : "Juana Lopez", "img" :"https://www.kindpng.com/picc/m/442-4426396_profile-picture-woman-circle-hd-png-download.png", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"}}
 
 @app.route('/upload/<user>', methods=['GET', 'POST'])
@@ -41,12 +41,12 @@ def upload_file(user):
       except FileNotFoundError :
           return 'Error, folder does not exist'
     a = ",".join(filenames)
-    estado= db.addProducto(a , "post", status)
+    estado= db.addPost(a , "post", status, user)
     if estado:
           return redirect(f'/feed/{user}')
     else :
         return "<h1>Fallo proceso de insercion de Producto.</h1>" 
-      
+
 @app.route('/', methods=('GET', 'POST'))
 def login():
   error = ""
@@ -59,13 +59,13 @@ def login():
         usr = True
     if usr:
       session["usuario"] = username
-      return redirect('feed/'+username)
+      return redirect('feed/'+session["usuario"])
     else:
       error = "usuario o clave invalidos"
       flash(error, 'error')
       return render_template('login.html');
   else:
-    flash(error, 'error')
+    flash("Por favor iniciar sesion", 'error')
     return render_template('login.html');
     
     # return jsonify({"encontrado" : encontrado})
@@ -73,12 +73,13 @@ def login():
 @app.route('/feed/<user>', methods=('GET', 'POST'))
 def main_page(user):
   usr = []
-  for key, usuario in lista_usuarios.items():
-        if usuario['user'] == user:
-          usr = usuario
-  if usr:
-    output = db.getImagenes()
-    return render_template('feed.html', usuario=usr, output=output)
+  if user == session['usuario']:
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            usr = usuario
+    if usr:
+      output = db.getPosts()
+      return render_template('feed.html', usuario=usr, output=output)
   else:
     return redirect('/')
 
@@ -93,14 +94,23 @@ def register(usuario):
 @app.route('/profile/<user>', methods=('GET', 'POST'))
 def busqueda2(user):
   usr = []
+  auth = False
   for key, usuario in lista_usuarios.items():
-        if usuario['user'] == user:
-          usr = usuario
-  if usr:
-    output = db.getImagenes()
-    return render_template('feed.html', usuario=usr, output=output)
+          if usuario['user'] == session['usuario']:
+            usr = usuario
+  if user == session['usuario']:
+    auth = True
+    output = db.getPostByUser(user)
+    if usr:
+      return render_template('perfil.html', usuario=usr, output=output, auth=auth)
+    else:
+      return redirect('/')
   else:
-    return redirect('/')
+    output = db.getPostByUser(user)
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            res = usuario
+    return render_template('perfil.html', usuario=usr, output=output, auth=auth, res=res)
 
 @app.route('/admin/<user>', methods=('GET', 'POST'))
 def admin_login(user):
@@ -114,28 +124,64 @@ def admin_login(user):
 @app.route('/mensajes/<user>', methods=('GET', 'POST'))
 def busqueda_msg(user):
   usr = []
-  for key, usuario in lista_usuarios.items():
-        if usuario['user'] == user:
-          usr = usuario
-  return render_template('busqueda.html', usuario=usr)
+  if user == session['usuario']:
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            usr = usuario
+    return render_template('busqueda.html', usuario=usr)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=("GET", "POST"))
 def busqueda(user):
   usr = []
-  for key, usuario in lista_usuarios.items():
-        if usuario['user'] == user:
-          usr = usuario
-  if request.method == 'POST':
-    resultado = request.form['busqueda']
-    respuesta = []
-    for key, busqueda in lista_usuarios.items():
-        if busqueda['user'] == resultado:
-          respuesta.append(busqueda);
-    return render_template('busqueda.html', usuario=usr, respuestas=respuesta)
+  if user == session['usuario']:
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            usr = usuario
+    if request.method == 'POST':
+      resultado = request.form['busqueda']
+      respuesta = []
+      for key, busqueda in lista_usuarios.items():
+          if busqueda['user'] == resultado:
+            respuesta.append(busqueda);
+      return render_template('busqueda.html', usuario=usr, respuestas=respuesta)
   else:
     return render_template('busqueda.html', usuario=usr)
   # return render_template('')
+
+@app.route('/amigos/')
+def amigo():
+  return redirect('/feed/<session["usuario"]>')
+
+@app.route('/amigos/<user>')
+def amigos(user):
+  usr = []
+  if user == session['usuario']:
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            usr = usuario
+    if request.method == 'GET':
+      resultado = "simon"
+      respuesta = []
+      for key, busqueda in lista_usuarios.items():
+          if busqueda['user'] == resultado:
+            respuesta.append(busqueda);
+      return render_template('amigos.html', usuario=usr, respuestas=respuesta)
+  else:
+    return redirect('login', usuario=usr)
+
+@app.route('/fotos/<user>', methods=['GET'])
+def fotos(user):
+  usr = []
+  if user == session['usuario']:
+    output = db.getImagenes()
+    for key, usuario in lista_usuarios.items():
+          if usuario['user'] == user:
+            usr = usuario
+    return render_template('fotos.html', usuario=usr, respuestas=output)
+  else:
+    return redirect('login')
+
 
 @app.before_request
 def antes_de_cada_peticion():

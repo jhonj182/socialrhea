@@ -6,17 +6,31 @@ def conectar():
     conn= sqlite3.connect(dbname)
     return conn
 
-def getImagenes():
+def getUser(user):
+    conn= conectar()
+    cursor= conn.execute("select * from tbl_Users WHERE user = '"+ user +"';")
+    resultados= list(cursor.fetchall())
+    conn.close()
+    return resultados
+
+def getPosts():
     conn= conectar()
     cursor= conn.execute("select * from imagenes ORDER BY codigo DESC;")
     resultados= list(cursor.fetchall())
     conn.close()
     return resultados
+  
+def getPostByUser(user):
+    conn= conectar()
+    cursor= conn.execute("select * from imagenes WHERE user = '"+ user +"' ORDER BY codigo DESC;")
+    resultados= list(cursor.fetchall())
+    conn.close()
+    return resultados
 
-def addProducto(url, code, status):
+def addPost(url, code, status, user):
     try :
         conn=conectar()
-        conn.execute("insert into imagenes (url, codigoPost, mensaje) values(?,?,?);", (url, code, status))
+        conn.execute("insert into imagenes (url, codigoPost, mensaje, user) values(?,?,?,?);", (url, code, status, user))
         conn.commit()
         conn.close()
         return True

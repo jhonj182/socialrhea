@@ -228,17 +228,6 @@
                                         </span>
                                     </span>
                                   </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <ul class="admin-options">
-                                        <li><a href="#">Profile Settings</a></li>
-                                        <li><a href="user-Amigos.html">Amigos</a></li>
-                                        <li><a href="forums.html">Forums</a></li>
-                                        <li><a href="#">Settings</a></li>
-                                        <li><a href="#">Terms and Conditions</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        <li><a href="login.html">Log Out</a></li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -258,10 +247,12 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title=" NEWSFEED"><i class="icofont-newspaper"></i></a></li>
-                            <li><a href="/profile/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-list"></i></a></li>
+                            <li><a href="/feed/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
+                            <li><a href="/mensajes/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="MENSAJES"><i class="icofont-chat"></i></a></li>
+                            <li><a href="/profile/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-user"></i></a></li>
                             <li><a href="user-friends.html" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
                             <li><a href="user-photo.html" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
+                            <li><a href="/logout/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Cerrar Sesion"><i class="icofont-logout"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -281,53 +272,19 @@
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
                             <li><a href="/feed/{{ usuario.user }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                            <li><a href="/feed/{{ usuario.user }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                            <li><a href="/mensajes/{{ usuario.user }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
                             <li><a href="/profile/{{ usuario.user }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
-                            <li><a href="user-Amigos.html" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
-                            <li><a href="user-photo.html" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                            <li><a href="/amigos/{{ usuario.user }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                            <li><a href="/fotos/{{ usuario.user }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                            <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                         <ul class="top-menu-mobile">
-                            <li class="menu-label">Community</li>
-                            <li>
-                                <a href="user-about.html" class="menu-link">Profile About</a>
-                            </li>
-                            <li>
-                                <a href="user-badges.html" class="menu-link">Profile Badges</a>
-                            </li>
-                            <li>
-                                <a href="forums.html" class="menu-link">Forums</a>
-                            </li>
-                            <li>
-                                <a href="forums-forum.html" class="menu-link">Forums Topic</a>
-                            </li>
-                            <li>
-                                <a href="forums-info.html" class="menu-link">Forums Info</a>
-                            </li>
-                            <li>
-                                <a href="forums-members.html" class="menu-link">Forums Members</a>
-                            </li>
-                            <li>
-                                <a href="forums-media.html" class="menu-link">Forums Media</a>
-                            </li>
-                            <li class="menu-label">Pages</li>
-                            <li>
-                                <a href="about-us.html" class="menu-link">About</a>
-                            </li>
-                            <li>
-                                <a href="user-blog.html" class="menu-link">Blog</a>
-                            </li>
-                            <li>
-                                <a href="shop.html" class="menu-link">Shop</a>
-                            </li>
-                            <li>
-                                <a href="single-blog.html" class="menu-link">Blog Details</a>
-                            </li>
-                            <li>
-                                <a href="single-shop.html" class="menu-link">Shop Details</a>
-                            </li>
-                            <li>
-                                <a href="contact.html" class="menu-link">Contact Us</a>
-                            </li>
+                          <li><a href="/feed/{{ usuario.user }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
+                          <li><a href="/mensajes/{{ usuario.user }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                          <li><a href="/profile/{{ usuario.user }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
+                          <li><a href="/amigos/{{ usuario.user }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                          <li><a href="/fotos/{{ usuario.user }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                          <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -464,10 +421,10 @@
       </div>
   </div>
   <!-- Jquery Js -->
-  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}" defer></script>
   <!-- Site Scripts -->
-  <script src="{{ url_for('static', filename='js/app.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script>
 </body>
 
 </html>
