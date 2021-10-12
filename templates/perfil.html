@@ -7,23 +7,23 @@
   <!--=====================================-->
   <div class="container">
       <!-- Banner Area Start -->
-      <div class="banner-user" style="background-image: url('{{ usuario.imgdestacada }}');">
+      <div class="banner-user" style="background-image: url('{{ usuario.highPic }}');background-position: center center;">
           <div class="banner-content">
               <div class="media">
                   <div class="item-img">
                     {% if usuario and auth %}
-                    <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
+                    <img src="{{ usuario.profPic }}" width="125" height="125" alt="Chat">
                     {% else %}
-                    <img src="{{ res.img }}" width="125" height="125" alt="Chat">
+                    <img src="{{ res.profPic }}" width="125" height="125" alt="Chat">
                     {% endif %}
                   </div>
                   <div class="media-body">
                     {% if usuario and auth %}
-                      <h3 class="item-title">{{ usuario.nombre }}</h3>
-                      <div class="item-subtitle">{{ usuario.Pais }}</div>
+                      <h3 class="item-title">{{ usuario.name }}</h3>
+                      <div class="item-subtitle">{{ usuario.country }}</div>
                     {% else %}
-                      <h3 class="item-title">{{ res.nombre }}</h3>
-                      <div class="item-subtitle">{{ res.Pais }}</div>
+                      <h3 class="item-title">{{ res.name }}</h3>
+                      <div class="item-subtitle">{{ res.country }}</div>
                     {% endif %}
                       <ul class="item-social">
                           <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
@@ -43,11 +43,11 @@
       </div>
       <div class="block-box user-top-header">
           <ul class="menu-list">
-            <li><a href="/profile/{{usuario.user}}">Sobre Mi</a></li>
-            <li><a href="/amigos/{{usuario.user}}">Amigos</a></li>
-            <li><a href="/fotos/{{usuario.user}}">Fotos</a></li>
+            <li><a href="/profile/{{usuario.User}}">Sobre Mi</a></li>
+            <li><a href="/amigos/{{usuario.User}}">Amigos</a></li>
+            <li><a href="/fotos/{{usuario.User}}">Fotos</a></li>
             {% if auth %}
-            <li><a href="/editarperfil/{{usuario.user}}">Editar Perfil</a></li>
+            <li><a href="/editarperfil/{{usuario.User}}">Editar Perfil</a></li>
             {% else %}
               {% if res %}
                 <li><a href="/agregaramigo/{{res.user}}">Agregar a mis amigos</a></li>
@@ -86,13 +86,14 @@
         </div>
         <div class="row">
             <div class="col-lg-8">
+              {% if usuario and auth %}
                 <div class="block-box post-input-tab">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation" data-toggle="tooltip" data-placement="top" title="MEDIA">
                             <a class="nav-link" data-toggle="tab" href="#post-media" role="tab" aria-selected="false"><i class="icofont-image"></i>Subir Foto / Album</a>
                         </li>
                       </ul>
-                  <form action="/upload/{{ usuario.user }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
+                  <form action="/upload/{{ usuario.User }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="post-media" role="tabpanel">
                             <textarea name="status-input" id="status-input2" class="form-control textarea" placeholder="Comparte en que estas pensando... . . ." cols="30" rows="6" value=""></textarea>
@@ -114,16 +115,17 @@
                         </div>
                   </form>
                 </div>
+                {% endif %}
                 {% if output %}
                 {% for pro in output %}
                 <div class="block-box post-view">
                     <div class="post-header">
                         <div class="media">
                             <div class="user-img">
-                                <img src="{{ usuario.img }}" width="50" height="50" alt="Aahat">
+                                <img src="{{ usuario.profPic }}" width="50" height="50" alt="Aahat">
                             </div>
                             <div class="media-body">
-                                <div class="user-title"><a href="#">{{ usuario.nombre }}</a> <i class="icofont-check"></i> uploaded <a href="#"></a> </div>
+                                <div class="user-title"><a href="#">{{ usuario.name }}</a> <i class="icofont-check"></i> uploaded <a href="#"></a> </div>
                                 <ul class="entry-meta">
                                     <li class="meta-privacy"><i class="icofont-world"></i> Public</li>
                                     <li class="meta-time">10 mins ago</li>

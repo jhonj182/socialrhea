@@ -39,7 +39,7 @@
                                     <a class="nav-link" data-toggle="tab" href="#post-media" role="tab" aria-selected="false"><i class="icofont-image"></i>Subir Foto / Album</a>
                                 </li>
                               </ul>
-                          <form action="/upload/{{ usuario.user }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
+                          <form action="/upload/{{ usuario.User }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="post-media" role="tabpanel">
                                     <textarea name="status-input" id="status-input2" class="form-control textarea" placeholder="Comparte en que estas pensando... . . ." cols="30" rows="6" value=""></textarea>
@@ -67,7 +67,7 @@
                             <div class="post-header">
                                 <div class="media">
                                     <div class="user-img">
-                                        <img src="{{ usuario.img }}" width="50" height="50" alt="Aahat">
+                                        <img src="{{ usuario.profPic }}" width="50" height="50" alt="Aahat">
                                     </div>
                                     <div class="media-body">
                                         <div class="user-title"><a href="/profile/{{ pro[4] }}">{{ pro[4] }}</a> <i class="icofont-check"></i> uploaded <a href="#"></a> </div>
@@ -184,11 +184,11 @@
                                 </div>
                                 <div class="profile-img">
                                     <a href="#">
-                                      <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
+                                      <img src="{{ usuario.profPic }}" width="125" height="125" alt="Chat">
                                     </a>
                                 </div>
                                 <div class="profile-name">
-                                    <h4 class="author-name"><a href="#">{{ usuario.nombre }}</a></h4>
+                                    <h4 class="author-name"><a href="#">{{ usuario.name }}</a></h4>
                                     <div class="author-location">United State Of America</div>
                                 </div>
                             </div>

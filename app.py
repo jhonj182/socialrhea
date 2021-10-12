@@ -16,15 +16,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
-lista_usuarios = {
-  1 : {"user": "jhonTa","nombre" : "Jhon Jairo Tamayo Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  2 : {"user": "simon","nombre" : "Simon Vallejo Valencia","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  3 : {"user": "roberto","nombre" : "Jhon Jairo Tamayo Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  4 : {"user": "elpepe","nombre" : "El Pepe Martinez","passwd" : "abc123", "img" :"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=580&q=80", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  5 : {"user": "simon","nombre" : "Juana simona Lopez", "img" :"https://www.kindpng.com/picc/m/442-4426396_profile-picture-woman-circle-hd-png-download.png", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"},
-  6 : {"user": "simon","nombre" : "Juana Lopez", "img" :"https://www.kindpng.com/picc/m/442-4426396_profile-picture-woman-circle-hd-png-download.png", "imgdestacada" : "https://images.unsplash.com/photo-1511497584788-876760111969?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1032&q=80", "Pais" : "Colombia"}}
+app.secret_key = os.urandom(24)
 
 @app.route('/upload/<user>', methods=['GET', 'POST'])
 def upload_file(user):
@@ -54,9 +46,9 @@ def login():
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
-    for key, usuario in lista_usuarios.items():
-      if usuario['user'] == username and usuario['passwd'] == password:
-        usr = True
+    dbUser = db.getUser(username)
+    if dbUser['User'] == username and dbUser['passwrd'] == password:
+      usr = True
     if usr:
       session["usuario"] = username
       return redirect('feed/'+session["usuario"])
@@ -73,19 +65,14 @@ def login():
 @app.route('/feed/<user>', methods=('GET', 'POST'))
 def main_page(user):
   usr = []
-  if user == session['usuario']:
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            usr = usuario
+  dbUser = db.getUser(user)
+  if dbUser['User'] == user:
+    usr = True
     if usr:
       output = db.getPosts()
-      return render_template('feed.html', usuario=usr, output=output)
+      return render_template('feed.html', usuario=dbUser, output=output)
   else:
     return redirect('/')
-
-@app.route('/admin-login', methods=('GET', 'POST'))
-def login_admin():
-  return render_template('login.html', methods=('GET', 'POST'))
   
 @app.route('/registro/<usuario>', methods=('GET', 'POST'))
 def register(usuario):
@@ -95,56 +82,39 @@ def register(usuario):
 def busqueda2(user):
   usr = []
   auth = False
-  for key, usuario in lista_usuarios.items():
-          if usuario['user'] == session['usuario']:
-            usr = usuario
+  dbUser = db.getUser(session['usuario'])
+  print(dbUser)
   if user == session['usuario']:
     auth = True
     output = db.getPostByUser(user)
-    if usr:
-      return render_template('perfil.html', usuario=usr, output=output, auth=auth)
-    else:
-      return redirect('/')
+    return render_template('perfil.html', usuario=dbUser, output=output, auth=auth)
   else:
     output = db.getPostByUser(user)
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            res = usuario
-    return render_template('perfil.html', usuario=usr, output=output, auth=auth, res=res)
-
-@app.route('/admin/<user>', methods=('GET', 'POST'))
-def admin_login(user):
-  usr = []
-  for key, usuario in lista_usuarios.items():
-        if usuario['user'] == user:
-          usr = usuario
-  return render_template('dashboard.html', usuario=usr)
-
+    dbUser2 = db.getUser(user)
+    if dbUser2['User'] == user:
+      usr = True
+    return render_template('perfil.html', usuario=dbUser, output=output, auth=auth, res=dbUser2)
 
 @app.route('/mensajes/<user>', methods=('GET', 'POST'))
 def busqueda_msg(user):
   usr = []
   if user == session['usuario']:
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            usr = usuario
-    return render_template('busqueda.html', usuario=usr)
+    dbUser = db.getUser(session['usuario'])
+    return render_template('mensajes.html', usuario=dbUser)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=("GET", "POST"))
 def busqueda(user):
   usr = []
   if user == session['usuario']:
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            usr = usuario
+    dbUser = db.getUser(user)
+    if dbUser['User'] == user:
+      usr = True
     if request.method == 'POST':
       resultado = request.form['busqueda']
-      respuesta = []
-      for key, busqueda in lista_usuarios.items():
-          if busqueda['user'] == resultado:
-            respuesta.append(busqueda);
-      return render_template('busqueda.html', usuario=usr, respuestas=respuesta)
+      respuesta = db.getUsersByName(resultado)
+      print(respuesta)
+      return render_template('busqueda.html', usuario=dbUser, respuestas=respuesta)
   else:
     return render_template('busqueda.html', usuario=usr)
   # return render_template('')
@@ -157,16 +127,10 @@ def amigo():
 def amigos(user):
   usr = []
   if user == session['usuario']:
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            usr = usuario
+    dbUser = db.getUser(session['usuario'])
     if request.method == 'GET':
-      resultado = "simon"
-      respuesta = []
-      for key, busqueda in lista_usuarios.items():
-          if busqueda['user'] == resultado:
-            respuesta.append(busqueda);
-      return render_template('amigos.html', usuario=usr, respuestas=respuesta)
+      resultado = db.getUsers()
+      return render_template('amigos.html', usuario=dbUser, respuestas=resultado)
   else:
     return redirect('login', usuario=usr)
 
@@ -174,24 +138,72 @@ def amigos(user):
 def fotos(user):
   usr = []
   if user == session['usuario']:
-    output = db.getImagenes()
-    for key, usuario in lista_usuarios.items():
-          if usuario['user'] == user:
-            usr = usuario
-    return render_template('fotos.html', usuario=usr, respuestas=output)
+    output = db.getPosts()
+    dbUser = db.getUser(session['usuario'])
+    return render_template('fotos.html', usuario=dbUser, respuestas=output)
   else:
-    return redirect('login')
+    return redirect('/feed', session['usuario'])
+
+@app.route('/admin/<user>', methods=('GET', 'POST'))
+def admin(user):
+  dbUser = db.getUser(session['usuario'])
+  print(dbUser)
+  if user == session['usuario']:
+    return render_template('dashboard.html', usuario=dbUser)
+  else:
+    return redirect('/')
+
+@app.route('/admin-login', methods=('GET', 'POST'))
+def admin_login():
+  error = ""
+  usr = False
+  if request.method == 'POST':
+    username = request.form['login-email']
+    password = request.form['login-password']
+    dbUser = db.getUser(username)
+    if dbUser['User'] == username and dbUser['passwrd'] == password:
+      usr = True
+    if usr:
+      session["usuario"] = username
+      return redirect('admin/'+session["usuario"])
+    else:
+      error = "usuario o clave invalidos"
+      flash(error, 'error')
+      return render_template('admin-login.html');
+  else:
+    flash("Por favor iniciar sesion", 'error')
+    return render_template('admin-login.html');
 
 
-@app.before_request
-def antes_de_cada_peticion():
-    ruta = request.path
-    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-    if not 'usuario' in session and ruta != "/" and ruta != "/logout" and not ruta.startswith("/static"):
-        flash("Inicia sesión para continuar")
-        return redirect("/")
-    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
+@app.route('/admin/users', methods=('GET', 'POST'))
+def admin_users():
+  dbUser = db.getUser(session['usuario'])
+  if session['usuario']:
+    usuarios = db.getUsers()
+    print(usuarios)
+    return render_template('dashboard-users.html', usuario=dbUser, usuarios=usuarios)
+
+@app.route('/admin/superusers', methods=('GET', 'POST'))
+def admin_superusers():
+  dbUser = db.getUser(session['usuario'])
+  if session['usuario']:
+    usuarios = db.getSuperUsers()
+    print(usuarios)
+    return render_template('dashboard-superuser.html', usuario=dbUser, usuarios=usuarios)
+
+@app.route("/logout")
+def logout():
+  session['usuario'] = None
+  return redirect("/")
+# @app.before_request
+# def antes_de_cada_peticion():
+#     ruta = request.path
+#     # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
+#     if not 'usuario' in session and ruta != "/" and ruta != "/logout" and not ruta.startswith("/static"):
+#         flash("Inicia sesión para continuar")
+#         return redirect("/")
+#     # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 # Main
 if __name__=='__main__':
-    app.run(debug=True, port=4000)
+    app.run(debug=True, port=5500)

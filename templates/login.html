@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="media/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon.png' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.min.css' ) }}">
     <!-- Site Stylesheet -->
@@ -30,8 +30,12 @@
         <!--=          Header Menu Start       	=-->
         <!--=====================================-->
         <div class="login-page-wrap">
-            <div class="content-wrap">
-                <div class="login-content col-lg-4 ">
+            <div class="container">
+            <div class="row">
+                <div class="login-content col bg-center">
+                  <div class="item-logo">
+                      <a href="login.html#"><img src="{{ url_for('static', filename='assets/img/logo-primary.png' ) }}" alt="logo"></a>
+                  </div>
                   <div class="card w-80">
                     <div class="card-header">
                       Rhea Americana
@@ -43,15 +47,10 @@
                       </blockquote>
                     </div>
                   </div>
-                </div>
-                <div class="login-content col-lg-4 bg-center">
 
                 </div>
-                <div class="col-lg-4">  
-                <div class="login-content w-80">
-                    <div class="item-logo">
-                        <a href="login.html#"><img src="media/logo_large.png" alt="logo"></a>
-                    </div>
+                <div class="col d-flex">  
+                  <div class="login-content d-flex">
                     <div class="login-form-wrap">
                         <div class="tab-content">
                             <div class="tab-pane login-tab fade show active" id="login-tab" role="tabpanel">
@@ -102,7 +101,8 @@
                 </div>
               </div>
             </div>
-        </div>
+            </div>
+            </div>
 
         <!--=====================================-->
         <!--=      Header Search Start          =-->

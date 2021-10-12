@@ -7,15 +7,15 @@
   <!--=====================================-->
   <div class="container">
       <!-- Banner Area Start -->
-      <div class="banner-user" style="background-image: url('{{ usuario.imgdestacada }}');">
+      <div class="banner-user" style="background-image: url('{{ usuario.highPic }}');background-position: center center;">
           <div class="banner-content">
               <div class="media">
                   <div class="item-img">
-                    <img src="{{ usuario.img }}" width="125" height="125" alt="Chat">
+                    <img src="{{ usuario.profPic }}" width="125" height="125" alt="Chat">
                   </div>
                   <div class="media-body">
-                      <h3 class="item-title">{{ usuario.nombre }}</h3>
-                      <div class="item-subtitle">{{ usuario.Pais }}</div>
+                      <h3 class="item-title">{{ usuario.name }}</h3>
+                      <div class="item-subtitle">{{ usuario.country }}</div>
                       <ul class="item-social">
                           <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
                           <li><a href="user-about.html#" class="bg-twitter"><i class="icofont-twitter"></i></a></li>
@@ -34,10 +34,10 @@
       </div>
       <div class="block-box user-top-header">
           <ul class="menu-list">
-              <li><a href="/profile/{{usuario.user}}">Sobre Mi</a></li>
-              <li><a href="/amigos/{{usuario.user}}">Amigos</a></li>
-              <li><a href="/fotos/{{usuario.user}}">Fotos</a></li>
-              <li><a href="/editarperfil/{{usuario.user}}">Editar Perfil</a></li>
+              <li><a href="/profile/{{usuario.User}}">Sobre Mi</a></li>
+              <li><a href="/amigos/{{usuario.User}}">Amigos</a></li>
+              <li><a href="/fotos/{{usuario.User}}">Fotos</a></li>
+              <li><a href="/editarperfil/{{usuario.User}}">Editar Perfil</a></li>
               <li>
                   <div class="dropdown">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
