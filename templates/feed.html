@@ -90,15 +90,15 @@
                             </div>
                             <div class="post-body">
                                 <p>{{ pro[3] }}</p>
-                                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                <div id="carouselExampleIndicators{{ pro[0] }}" class="carousel slide" data-ride="carousel">
                                   {% set list1 = pro[1].split(',') %}
 
                                   <ol class="carousel-indicators">
                                     {% for item in list1 %}
                                       {% if loop.index == 1 %}
-                                        <li data-target="#carouselExampleIndicators" data-slide-to="{{loop.index}}" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators{{ pro[0] }}" data-slide-to="{{loop.index}}" class="active"></li>
                                         {% else %}
-                                        <li data-target="#carouselExampleIndicators" data-slide-to="{{loop.index}}"></li>
+                                        <li data-target="#carouselExampleIndicators{{ pro[0] }}" data-slide-to="{{loop.index}}"></li>
                                       {% endif %}
                                     {% endfor %} 
                                   </ol>
@@ -116,11 +116,11 @@
                                       {% endif %}
                                     {% endfor %} 
                                   </div>
-                                  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                  <a class="carousel-control-prev" href="#carouselExampleIndicators{{ pro[0] }}" role="button" data-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Previous</span>
                                   </a>
-                                  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                  <a class="carousel-control-next" href="#carouselExampleIndicators{{ pro[0] }}" role="button" data-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Next</span>
                                   </a>
@@ -184,7 +184,7 @@
                                 </div>
                                 <div class="profile-img">
                                     <a href="#">
-                                      <img src="{{ usuario.profPic }}" width="125" height="125" alt="Chat">
+                                      <img src="{{ usuario.profPic }}" width="125" height="125" alt="{{ usuario.name }}">
                                     </a>
                                 </div>
                                 <div class="profile-name">
@@ -241,7 +241,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -253,7 +253,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -265,7 +265,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -277,7 +277,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -293,7 +293,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -305,7 +305,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -317,7 +317,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -329,7 +329,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -345,7 +345,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -357,7 +357,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -369,7 +369,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -381,7 +381,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -599,7 +599,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="chat_10.jpg" alt="Chat">
+                                            <img src="chat_10.jpg" alt="{{ usuario.name }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -614,7 +614,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -629,7 +629,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="Chat">
+                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -644,7 +644,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="chat_6.jpg" alt="Chat">
+                                            <img src="chat_6.jpg" alt="{{ usuario.name }}">
                                         </a>
                                     </div>
                                     <div class="media-body">

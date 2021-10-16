@@ -6,7 +6,16 @@
 
       <!-- Main Content -->
       <div class="container-fluid">
-
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </section>
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Tables</h1>
         <p class="mb-4">Aqui encontraras la informacion de todos los usuarios registrados, las Acciones como Eliminar son permanentes, manejar con precacion.</p>
@@ -57,7 +66,7 @@
                                   <button class="btn btn-secondary">Bloquear</button>
                                 </td>
                                 <td>
-                                  <button class="btn btn-danger">Eliminar</button>
+                                  <a href="/deleteuser/{{ usr.User }}" class="btn btn-danger js-delete">Eliminar</a>
                                 </td>
 
                               </tr>

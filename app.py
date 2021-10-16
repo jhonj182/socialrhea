@@ -1,22 +1,24 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for, jsonify
 from flask.helpers import url_for
-from obtenerusuarios import usuarios
 import os
 import db
 import json
 from werkzeug.utils import secure_filename
+import utils
+import validacion as valida
 
 UPLOAD_FOLDER = 'static/uploads'
+UPLOAD_IMG_FOLDER = 'static/uploads/imgusuarios'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-
+dbUsuario = {}
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-app.secret_key = os.urandom(24)
 
 @app.route('/upload/<user>', methods=['GET', 'POST'])
 def upload_file(user):
@@ -37,7 +39,7 @@ def upload_file(user):
     if estado:
           return redirect(f'/feed/{user}')
     else :
-        return "<h1>Fallo proceso de insercion de Producto.</h1>" 
+        return "<h1>Fallo proceso de Registro.</h1>" 
 
 @app.route('/', methods=('GET', 'POST'))
 def login():
@@ -51,56 +53,57 @@ def login():
       usr = True
     if usr:
       session["usuario"] = username
-      return redirect('feed/'+session["usuario"])
+      global dbUsuario
+      dbUsuario= dbUser
+      return redirect('feed')
     else:
       error = "usuario o clave invalidos"
       flash(error, 'error')
       return render_template('login.html');
   else:
-    flash("Por favor iniciar sesion", 'error')
-    return render_template('login.html');
+      if (session):
+        return redirect('feed')
+      else:
+        flash("Por favor iniciar sesion", 'error')
+        return render_template('login.html');
     
     # return jsonify({"encontrado" : encontrado})
 
-@app.route('/feed/<user>', methods=('GET', 'POST'))
-def main_page(user):
+@app.route('/logout')
+def logout():
+  session['usuario'] = None
+  return redirect("/")
+
+@app.route('/feed')
+def main_page():
   usr = []
-  dbUser = db.getUser(user)
-  if dbUser['User'] == user:
-    usr = True
-    if usr:
-      output = db.getPosts()
-      return render_template('feed.html', usuario=dbUser, output=output)
+  if(dbUsuario):
+    output = db.getPosts()
+    return render_template('feed.html', usuario=dbUsuario, output=output)
   else:
     return redirect('/')
-  
-@app.route('/registro/<usuario>', methods=('GET', 'POST'))
-def register(usuario):
-  return render_template('login.html', usuario=usuario)
 
 @app.route('/profile/<user>', methods=('GET', 'POST'))
-def busqueda2(user):
+def profile(user):
   usr = []
   auth = False
-  dbUser = db.getUser(session['usuario'])
-  print(dbUser)
   if user == session['usuario']:
     auth = True
     output = db.getPostByUser(user)
-    return render_template('perfil.html', usuario=dbUser, output=output, auth=auth)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth)
   else:
     output = db.getPostByUser(user)
     dbUser2 = db.getUser(user)
     if dbUser2['User'] == user:
       usr = True
-    return render_template('perfil.html', usuario=dbUser, output=output, auth=auth, res=dbUser2)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUser2)
 
 @app.route('/mensajes/<user>', methods=('GET', 'POST'))
 def busqueda_msg(user):
   usr = []
   if user == session['usuario']:
-    dbUser = db.getUser(session['usuario'])
-    return render_template('mensajes.html', usuario=dbUser)
+  
+    return render_template('mensajes.html', usuario=dbUsuario)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=("GET", "POST"))
@@ -113,8 +116,7 @@ def busqueda(user):
     if request.method == 'POST':
       resultado = request.form['busqueda']
       respuesta = db.getUsersByName(resultado)
-      print(respuesta)
-      return render_template('busqueda.html', usuario=dbUser, respuestas=respuesta)
+      return render_template('busqueda.html', usuario=dbUsuario, respuestas=respuesta)
   else:
     return render_template('busqueda.html', usuario=usr)
   # return render_template('')
@@ -127,29 +129,43 @@ def amigo():
 def amigos(user):
   usr = []
   if user == session['usuario']:
-    dbUser = db.getUser(session['usuario'])
+  
     if request.method == 'GET':
       resultado = db.getUsers()
-      return render_template('amigos.html', usuario=dbUser, respuestas=resultado)
+      return render_template('amigos.html', usuario=dbUsuario, respuestas=resultado)
   else:
     return redirect('login', usuario=usr)
 
-@app.route('/fotos/<user>', methods=['GET'])
+@app.route('/fotos/<user>', methods=['GET', 'POST'])
 def fotos(user):
-  usr = []
   if user == session['usuario']:
     output = db.getPosts()
-    dbUser = db.getUser(session['usuario'])
-    return render_template('fotos.html', usuario=dbUser, respuestas=output)
+  
+    return render_template('fotos.html', usuario=dbUsuario, respuestas=output)
   else:
     return redirect('/feed', session['usuario'])
 
+@app.route('/deletePost/<idPost>')
+def deletePost(idPost):
+  usr = session['usuario']
+  post = db.getPostById(idPost)
+  cadena = post[1].split(',')
+  if(db.deletePost(idPost)):
+    for c in cadena:
+      if(os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], c))):
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], c))
+    return redirect('/fotos/'+ usr)
+  else:
+    flash('No se pudo eliminar', 'error')
+    return redirect('/fotos/'+ usr)
+  pass
+
 @app.route('/admin/<user>', methods=('GET', 'POST'))
 def admin(user):
-  dbUser = db.getUser(session['usuario'])
-  print(dbUser)
-  if user == session['usuario']:
-    return render_template('dashboard.html', usuario=dbUser)
+  if user == 'admin':
+    print(dbUsuario)
+    print(session["usuario"])
+    return render_template('dashboard.html', usuario = dbUsuario)
   else:
     return redirect('/')
 
@@ -160,12 +176,14 @@ def admin_login():
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
-    dbUser = db.getUser(username)
-    if dbUser['User'] == username and dbUser['passwrd'] == password:
-      usr = True
-    if usr:
-      session["usuario"] = username
-      return redirect('admin/'+session["usuario"])
+    select = request.form['select']
+    if username == 'admin' and password == 'admin':
+      session["usuario"] = 'john_tama'
+      global dbUsuario
+      dbUser = db.getUser(session["usuario"])
+      dbUsuario= dbUser
+      print(dbUsuario)
+      return redirect('admin/'+username)
     else:
       error = "usuario o clave invalidos"
       flash(error, 'error')
@@ -177,32 +195,189 @@ def admin_login():
 
 @app.route('/admin/users', methods=('GET', 'POST'))
 def admin_users():
-  dbUser = db.getUser(session['usuario'])
+
   if session['usuario']:
     usuarios = db.getUsers()
-    print(usuarios)
-    return render_template('dashboard-users.html', usuario=dbUser, usuarios=usuarios)
+    return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios)
 
 @app.route('/admin/superusers', methods=('GET', 'POST'))
 def admin_superusers():
-  dbUser = db.getUser(session['usuario'])
   if session['usuario']:
     usuarios = db.getSuperUsers()
-    print(usuarios)
-    return render_template('dashboard-superuser.html', usuario=dbUser, usuarios=usuarios)
+    return render_template('dashboard-superuser.html', usuario=dbUsuario, usuarios=usuarios)
 
-@app.route("/logout")
-def logout():
-  session['usuario'] = None
-  return redirect("/")
-# @app.before_request
-# def antes_de_cada_peticion():
-#     ruta = request.path
-#     # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-#     if not 'usuario' in session and ruta != "/" and ruta != "/logout" and not ruta.startswith("/static"):
-#         flash("Inicia sesión para continuar")
-#         return redirect("/")
-#     # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           
+@app.route('/deleteuser/<user>')
+def deleteUser(user):
+  if session['usuario']:
+    if db.deleteUser(user):
+      flash('Usuario eliminado con éxito', 'success')
+      return redirect('/admin/users')
+    else:
+      flash("no se pudo eliminar", 'error')
+      return redirect('/admin/users')
+
+
+@app.route('/deleteadmin/<user>')
+def deleteAdmin(user):
+  if session['usuario']:
+    if db.deleteAdmin(user):
+      flash('Usuario Administrador eliminado con éxito', 'success')
+      return redirect('/admin/superusers')
+    else:
+      flash("no se pudo eliminar", 'error')
+      return redirect('/admin/superusers')
+  pass
+#DBERNAL - Registro de nuevo usuario en la red social
+@app.route('/registro', methods=('GET', 'POST'))
+def Nuevo_Usuario():
+  if request.method == 'POST':
+    nombres = request.form['Nombres']
+    apellidos = request.form['Apellidos']
+    usuario = request.form['Usuario']
+    password = request.form['Password']
+    rpassword = request.form['Rpassword']
+    email = request.form['Email']
+    pais = request.form['Pais']
+    error = None
+    if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+    if password != rpassword:
+      error = "Las contraseñas son diferentes"
+      flash(error)
+      return render_template('registro2.html')
+
+    if not utils.isUsernameValid(usuario):
+      error = "El usuario debe ser alfanumerico o incluir solo '.','_','-'"
+      flash(error)
+      return render_template('registro2.html')
+
+    if not utils.isPasswordValid(password):
+      error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+      flash(error)
+      return render_template('registro2.html')
+
+    if not utils.isEmailValid(email):
+      error = 'Correo invalido'
+      flash(error)
+      return render_template('registro2.html')
+    db.addUser(usuario, nombres, password, filename, filename, pais)
+    session["usuario"] = usuario
+    return redirect('feed/'+session["usuario"])
+
+  else:    
+    return render_template('registro2.html')
+
+@app.route('/admin/createadmin', methods=('GET', 'POST'))
+def Nuevo_Admin():
+  if request.method == 'POST':
+    nombres = request.form['Nombres']
+    apellidos = request.form['Apellidos']
+    usuario = request.form['Usuario']
+    password = request.form['Password']
+    rpassword = request.form['Rpassword']
+    email = request.form['Email']
+    pais = request.form['Pais']
+    error = None
+    if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+    if password != rpassword:
+      error = "Las contraseñas son diferentes"
+      flash(error)
+      return render_template('createadmin.html', usuario=dbUsuario)
+
+    if not utils.isUsernameValid(usuario):
+      error = "El usuario debe ser alfanumerico o incluir solo '.','_','-'"
+      flash(error)
+      return render_template('createadmin.html', usuario=dbUsuario)
+
+    if not utils.isPasswordValid(password):
+      error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+      flash(error)
+      return render_template('createadmin.html', usuario=dbUsuario)
+
+    if not utils.isEmailValid(email):
+      error = 'Correo invalido'
+      flash(error)
+      return render_template('createadmin.html', usuario=dbUsuario)
+    db.addAdmin(usuario, nombres, password, filename, filename, pais)
+    session["usuario"] = usuario
+    return redirect('/admin/superusers')
+  else:    
+    return render_template('createadmin.html', usuario=dbUsuario)
+
+@app.route('/updateperfil', methods=['GET', 'POST'])
+def updateperfil():
+  if request.method == 'POST':
+    nombres = request.form['Nombres']
+    apellidos = request.form['Apellidos']
+    password = request.form['Password']
+    rpassword = request.form['Rpassword']
+    email = request.form['Email']
+    pais = request.form['Pais']
+    error = None
+    if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        flash('No selected file', 'error')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+    validador = valida.validarForm(password, rpassword, nombres, email)
+    if(db.updateUser(session['usuario'], nombres, password, filename, pais)):
+      return redirect('/logout')
+    else:
+      error = "No se pudo actualizar"
+      flash(error, "error")
+      return render_template('editarPerfil.html', usuario=dbUsuario)
+  else:
+    return redirect('/logout')
+@app.route('/editarperfil', methods=['GET', 'POST'])
+def editarperfil():
+
+  return render_template('editarPerfil.html', usuario=dbUsuario)
+
+#DBERNAL - Recuperación de credenciales
+@app.route('/olvidar')
+def RecuperaU():
+    return render_template('olvidar.html', methods=('POST'))
+
+@app.before_request
+def antes_de_cada_peticion():
+    ruta = request.path
+    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
+    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
+        flash("Inicia sesión para continuar")
+        return redirect("/")
+    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 # Main
 if __name__=='__main__':

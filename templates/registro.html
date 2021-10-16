@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='js/Valida_Registro.js') }}"></script>
+    <title>Formulario de Registro</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="media/favicon.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.min.css' ) }}">
+    <!-- Site Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
+
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="content">
+        {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </section>
+    <div class ="container">
+
+    <h1>Registro de Usuario SocialRhea</h1>
+
+    <form
+    action="/registro"
+    name = "FormaRegistro"
+    onSubmit = "validar_formulario();"
+    method = "POST"
+    enctype = "multipart/form-data"
+    >
+        <div class="form-group">
+            <label>Ingrese Foto de Perfil</label><br>
+            <input type="file" name="file" accept="image/png, .jpeg, .jpg, image/gif">
+        </div>
+        <br>
+        
+        <div class="form-group">
+            <label for="Nombres">Nombres: </label>
+            <input type="text" id="Nombres" name="Nombres" class="form-control js-user"/>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="Apellidos">Apellidos: </label>
+            <input type="text" id="Apellidos" name="Apellidos" class="form-control js-user"/></div>
+        <br>
+
+        <div class="form-group">
+            <label for="Usuario">Usuario: </label>
+            <input type="text" id="Usuario" name="Usuario" class="form-control js-user"/><br>
+            <label>Introduzca como quiere ser conocido en la red - sin espacios.</label>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="Password">Contraseña: </label>
+            <input type="password" id="Password" name="Password" class="form-control js-pass"/><br>
+            <label>Su contraseña debe tener entre 8 y 20 caracteres, contener letras, números y caracteres especiales.</label>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="Rpassword">Repetir Contraseña: </label>
+            <input type="password" id="Rpassword" name="Rpassword" class="form-control js-user"/><br>
+            <label>Introduzaca la misma contraseña definida para verificar que esté correcta.</label>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="Genero">Genero: </label>
+            <select id="Genero" name="Genero" class="form-control js-user">
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="No_Binario">No Binario</option>
+                <option value="LGTBI">LGTBI+</option>
+            </select>
+        </div>
+        <br>
+
+        <!--Aquí toca traer la información de la BD en una tabla que se llame estado civil-->
+        <div>
+            <label for="Estado_Civil">Estado Civil: </label>
+            <select id="Estado_Civil" name="Estado_Civil" class="form-control js-user">
+                <option value="Soltero">Soltero</option>
+                <option value="Casado">Casado</option>
+                <option value="Union_Libre">Unión Libre</option>
+                <option value="Separado">Separado</option>
+                <option value="Poliamor">Poliamor</option>
+            </select>
+        </div>
+        <br>
+
+        <div>
+            <label for="Email">Email: </label>
+            <input type="email" id="Email" name="Email" class="form-control js-user"/></div>
+        <br>
+
+        <!--Aquí toca traer la información de la BD en una tabla que se llame pais (campos país / ciudad) -->
+        <div><label for="Pais">País: </label>
+            <select id="Pais" name="Pais" class="form-control js-user">
+                <option value="Colombia">Colombia</option>
+                <option value="Ecuador">Ecuador</option>
+                <option value="Venezuela">Venezuela</option>
+                <option value="Perú">Perú</option>
+                <option value="Bolivia">Bolivia</option>
+            </select>
+        </div>
+        <br>
+
+        <!--Aquí toca traer la información de la BD en una tabla que se llame pais (campos país / ciudad / indicativo) -->
+        <!--Se podría validar que al seleccionar un país, cambie este campo y genere el listado de ciudades del país seleccionado-->
+        <div><label for="Ciudad">Ciudad: </label>
+            <select id="Ciudad" name="Ciudad" class="form-control js-user">
+                <option value="Colombia">Bogotá</option>
+                <option value="Ecuador">Guayaquil</option>
+                <option value="Venezuela">Caracas</option>
+                <option value="Perú">Lima</option>
+                <option value="Bolivia">La Paz</option>
+            </select>
+        </div>
+        <br>
+
+        <!--Aquí toca traer la información de la BD en una tabla que se llame pais (campos país / ciudad / indicativo) -->
+        <!--Indicativo depende del país y de la ciudad-->
+        <div><label for="Telefono">Telefono: </label><br>
+            <select id="Indicativo" name="Indicativo">
+                <option value="601">+601</option>
+                <option value="602">+602</option>
+                <option value="603">+603</option>
+                <option value="604">+604</option>
+                <option value="605">+605</option>
+            </select>
+            <input type="text" id="Telefono" name="Telefono" class="form-control js-user"/>
+        </div>
+        <br>
+
+        <div><label for="FechaN">Fecha de Nacimiento: </label>
+            <input type="date" id="FechaN" name="FechaN" class="form-control js-user"/>
+        </div>
+        <br>
+
+        <div>
+            <input type="checkbox" name="condiciones" /> Declaro haber leido y
+            acepto las condiciones generales del programa y la normativa sobre
+            protección de datos
+        </div>
+        <br>
+        <div class="account-create">
+            <!-- <button type="submit" value="Enviar">Enviar</button> -->
+            <button type="submit" class="btn btn-primary submit-btn" href="/NUsuario">Enviar</a>
+        </div>
+    </form>
+    </div>
+
+</body>
+</html>

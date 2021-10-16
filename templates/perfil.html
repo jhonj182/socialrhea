@@ -12,9 +12,9 @@
               <div class="media">
                   <div class="item-img">
                     {% if usuario and auth %}
-                    <img src="{{ usuario.profPic }}" width="125" height="125" alt="Chat">
+                    <img src="{{ usuario.profPic }}" width="125" height="125" alt="{{ usuario.name }}">
                     {% else %}
-                    <img src="{{ res.profPic }}" width="125" height="125" alt="Chat">
+                    <img src="{{ res.profPic }}" width="125" height="125" alt="{{ usuario.name }}">
                     {% endif %}
                   </div>
                   <div class="media-body">
@@ -47,7 +47,7 @@
             <li><a href="/amigos/{{usuario.User}}">Amigos</a></li>
             <li><a href="/fotos/{{usuario.User}}">Fotos</a></li>
             {% if auth %}
-            <li><a href="/editarperfil/{{usuario.User}}">Editar Perfil</a></li>
+            <li><a href="/editarperfil">Editar Perfil</a></li>
             {% else %}
               {% if res %}
                 <li><a href="/agregaramigo/{{res.user}}">Agregar a mis amigos</a></li>
@@ -275,7 +275,7 @@
             <div class="col-lg-4 widget-block widget-break-lg">
               <div class="widget widget-user-about">
                 <div class="widget-heading">
-                    <h3 class="widget-title">About Me</h3>
+                    <h3 class="widget-title">Sobre Mi</h3>
                     <div class="dropdown">
                         <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                             ...
@@ -290,8 +290,8 @@
                 <div class="user-info">
                     <p>Hi! My name is Rebeca Powel but some people may know me asserty GamePagla! I have a Newbike channel where I stream.</p>
                     <ul class="info-list">
-                        <li><span>Joined:</span>24/12/2020</li>
-                        <li><span>E-mail:</span>info@gmail.com</li>
+                        <li><span>Username:</span>{{ usuario.User }}</li>
+                        <li><span>Nombre:</span>{{ usuario.name }}</li>
                         <li><span>Address:</span>59 Street Neworkcity</li>
                         <li><span>Phone:</span>+123 9856836</li>
                         <li><span>Country:</span>USA</li>

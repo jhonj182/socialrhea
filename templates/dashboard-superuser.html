@@ -6,7 +6,16 @@
 
       <!-- Main Content -->
       <div class="container-fluid">
-
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <ul class=flashes>
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+        </section>
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Tables</h1>
         <p class="mb-4">Aqui encontraras la informacion de todos los usuarios administradores registrados, las Acciones como Eliminar son permanentes, manejar con precacion.</p>
@@ -15,6 +24,8 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Listado de Administradores</h6>
+                <br>
+                <a href="/admin/createadmin" class="btn btn-primary">Crear Administrador</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -35,7 +46,7 @@
                                 <th>Name</th>
                                 <th>Username</th>
                                 <th>Country</th>
-                                <th>Ver Perfil</th>
+                                <th>Editar</th>
                                 <th>Mensaje</th>
                                 <th>Bloquear</th>
                                 <th>Eliminar</th>
@@ -48,7 +59,7 @@
                                 <td>{{ usr.User }}</td>
                                 <td>{{ usr.country }}</td>
                                 <td>
-                                  <a href="/profile/{{ usr.User }}" class="btn btn-primary">Ver Perfil</a>
+                                  <a href="/editadmin/{{ usr.User }}" class="btn btn-primary">Editar</a>
                                 </td>
                                 <td>
                                   <button class="btn btn-primary">Mensaje</button>
@@ -57,7 +68,7 @@
                                   <button class="btn btn-secondary">Bloquear</button>
                                 </td>
                                 <td>
-                                  <button class="btn btn-danger">Eliminar</button>
+                                  <a href="/deleteadmin/{{ usr.User }}" class="btn btn-danger js-delete">Eliminar</a>
                                 </td>
 
                               </tr>
