@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block contenido %}
+        <!-- Page Content -->
+        <div class="page-content">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+            <!--=====================================-->
+            <!--=        Newsfeed  Area Start       =-->
+            <!--=====================================-->
+            <div class="container">
+              <div class="chat-conversion-box" id="chat-box-modal" tabindex="-1" aria-labelledby="chat-modal-label" aria-hidden="false">
+                <div class="chat">
+                    <div class="chat-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="chat-modal-label">{{ receptor.Nombre}} <span class="online"></span></h6>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="chat-conversion">
+                              {% for mensaje in mensajes %}
+                              {% if mensaje.remitente == usuario.id_usuario %}
+                                <li class="chat-you">
+                                    <div class="author-img">
+                                        <img src="/static/uploads/imgusuarios/{{ usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}">
+                                    </div>
+                                    <div class="author-text">
+                                        <span>{{ mensaje.contenido }}</span>
+                                    </div>
+                                </li>
+                              {% else %}
+                                <li class="chat-others">
+                                    <div class="author-img">
+                                        <img src="/static/uploads/imgusuarios/{{ receptor.Foto }}" width="50" height="50" alt="{{ receptor.name }}">
+                                    </div>
+                                    <div class="author-text">
+                                        <span>{{ mensaje.contenido }}</span>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="/mensajes/{{usuario.Usuario}}/{{receptor.Usuario}}" method="POST">
+                                <div class="form-group">
+                                    <input type="text" name="mensaje" class="form-control" placeholder="Write your text here....." required>
+                                    <div class="chat-plus-icon"><i class="icofont-plus-circle"></i></div>
+                                    <div class="file-attach-icon">
+                                        <a href="#"><i class="icofont-slightly-smile"></i></a>
+                                        <a href="#"><i class="icofont-camera"></i></a>
+                                        <a href="#"><i class="icofont-image"></i></a>
+                                        <a href="#"><i class="icofont-mic"></i></a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Chat Modal Here -->
+        {% endblock %}

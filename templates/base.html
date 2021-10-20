@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="media/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon.png' ) }}">
     <!-- Site Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="nav-item header-control">
                         <div class="inline-item d-none d-md-block">
-                          <form action="/busqueda/{{usuario.user}}" method="POST" class="js-search">
+                          <form action="/busqueda/{{ usuario.Usuario }}" method="POST" class="js-search">
                             <div class="input-group">
                               <input type="text" class="form-control" name="busqueda" placeholder="Buscar Amigos.......">
                               <div class="input-group-append">
@@ -217,28 +217,17 @@
                         </div>
                         <div class="inline-item">
                             <div class="dropdown dropdown-admin">
-                                <a href="/profile/{{ usuario.user }}" class="dropdown-toggle"></button>
+                                <a href="/profile/{{ usuario.Usuario }}" class="dropdown-toggle"></button>
                                     <span class="media">
                                         <span class="item-img">
-                                            <img src="{{ usuario.img }}" width="50" height="50" alt="Chat"> 
+                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}"> 
                                             <span class="acc-verified"><i class="icofont-check"></i></span>
                                         </span>
                                         <span class="media-body">
-                                            <span class="item-title">{{ usuario.nombre }}</span>
+                                            <span class="item-title">{{ usuario.Nombre }}</span>
                                         </span>
                                     </span>
                                   </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <ul class="admin-options">
-                                        <li><a href="#">Profile Settings</a></li>
-                                        <li><a href="user-Amigos.html">Amigos</a></li>
-                                        <li><a href="forums.html">Forums</a></li>
-                                        <li><a href="#">Settings</a></li>
-                                        <li><a href="#">Terms and Conditions</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        <li><a href="login.html">Log Out</a></li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -258,10 +247,12 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title=" NEWSFEED"><i class="icofont-newspaper"></i></a></li>
-                            <li><a href="/profile/{{ usuario.user }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-list"></i></a></li>
-                            <li><a href="user-friends.html" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
-                            <li><a href="user-photo.html" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
+                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
+                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="MENSAJES"><i class="icofont-chat"></i></a></li>
+                            <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-user"></i></a></li>
+                            <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
+                            <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
+                            <li><a href="/logout" class="menu-link" data-toggle="tooltip" data-placement="right" title="Cerrar Sesion"><i class="icofont-logout"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -280,54 +271,20 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.user }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                            <li><a href="/feed/{{ usuario.user }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
-                            <li><a href="/profile/{{ usuario.user }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
-                            <li><a href="user-Amigos.html" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
-                            <li><a href="user-photo.html" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
+                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                            <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
+                            <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                            <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                            <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                         <ul class="top-menu-mobile">
-                            <li class="menu-label">Community</li>
-                            <li>
-                                <a href="user-about.html" class="menu-link">Profile About</a>
-                            </li>
-                            <li>
-                                <a href="user-badges.html" class="menu-link">Profile Badges</a>
-                            </li>
-                            <li>
-                                <a href="forums.html" class="menu-link">Forums</a>
-                            </li>
-                            <li>
-                                <a href="forums-forum.html" class="menu-link">Forums Topic</a>
-                            </li>
-                            <li>
-                                <a href="forums-info.html" class="menu-link">Forums Info</a>
-                            </li>
-                            <li>
-                                <a href="forums-members.html" class="menu-link">Forums Members</a>
-                            </li>
-                            <li>
-                                <a href="forums-media.html" class="menu-link">Forums Media</a>
-                            </li>
-                            <li class="menu-label">Pages</li>
-                            <li>
-                                <a href="about-us.html" class="menu-link">About</a>
-                            </li>
-                            <li>
-                                <a href="user-blog.html" class="menu-link">Blog</a>
-                            </li>
-                            <li>
-                                <a href="shop.html" class="menu-link">Shop</a>
-                            </li>
-                            <li>
-                                <a href="single-blog.html" class="menu-link">Blog Details</a>
-                            </li>
-                            <li>
-                                <a href="single-shop.html" class="menu-link">Shop Details</a>
-                            </li>
-                            <li>
-                                <a href="contact.html" class="menu-link">Contact Us</a>
-                            </li>
+                          <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
+                          <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                          <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
+                          <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                          <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                          <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -344,66 +301,16 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="user-chat-list">
+                          {% for user in usuarios %}
                             <li class="chat-item chat-open">
                                 <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
+                                  <a href="/mensajes/{{usuario.Usuario}}/{{ user.Usuario }}">
+                                    <img src="/static/uploads/imgusuarios/{{user.Foto}}" width="50" height="50" alt="{{ user.Nombre }}">
                                     <span class="chat-status offline"></span>
+                                  </a>
                                 </div>
                             </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="chat_6.jpg" alt="chat">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="chat">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
+                          {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -412,62 +319,12 @@
         {% block contenido %}
           
         {% endblock %}
-
-        <div class="chat-conversion-box" id="chat-box-modal" tabindex="-1" aria-labelledby="chat-modal-label" aria-hidden="true">
-          <div class="modal-dialog">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h6 class="modal-title" id="chat-modal-label">Fahim Rahman <span class="online"></span></h6>
-                      <div class="action-icon">
-                          <button class="chat-shrink"><i class="icofont-minus"></i></button>
-                          <button type="button" class="close chat-close chat-open" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                          </button>
-                      </div>
-                  </div>
-                  <div class="modal-body">
-                      <ul class="chat-conversion">
-                          <li class="chat-others">
-                              <div class="author-img">
-                                  <img src="chat_12.jpg" alt="Chat">
-                              </div>
-                              <div class="author-text">
-                                  <span>How are you Fahim vai ? Tommorow office will be your last day of Bachelor life.</span>
-                              </div>
-                          </li>
-                          <li class="chat-you">
-                              <div class="author-img">
-                                  <img src="chat_11.jpg" alt="Chat">
-                              </div>
-                              <div class="author-text">
-                                  <span>hmm That's great</span>
-                              </div>
-                          </li>
-                      </ul>
-                  </div>
-                  <div class="modal-footer">
-                      <form>
-                          <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Write your text here.....">
-                              <div class="chat-plus-icon"><i class="icofont-plus-circle"></i></div>
-                              <div class="file-attach-icon">
-                                  <a href="#"><i class="icofont-slightly-smile"></i></a>
-                                  <a href="#"><i class="icofont-camera"></i></a>
-                                  <a href="#"><i class="icofont-image"></i></a>
-                                  <a href="#"><i class="icofont-mic"></i></a>
-                              </div>
-                          </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div>
   </div>
   <!-- Jquery Js -->
-  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}" defer></script>
   <!-- Site Scripts -->
-  <script src="{{ url_for('static', filename='js/app.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script>
 </body>
 
 </html>

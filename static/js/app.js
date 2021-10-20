@@ -6,7 +6,9 @@
     -------------------------------------*/
     const imginput = document.querySelector('.js-imginput')
     const form = document.querySelector('.js-post-form')
+
     // Esto define lo que sucede cuando el usuario intenta enviar los datos.
+    if (imginput){
     imginput.addEventListener("change", function(e){
       let fileInput = imginput;
       let filePath = fileInput.value;
@@ -45,8 +47,6 @@
         alert("paso");
         form.submit();
       }
-
-      alert("hola mundo");
       const test = email.value.length === 0 || emailRegExp.test(email.value);
       if (!test) {
         email.className = "invalid";
@@ -61,7 +61,7 @@
         error.className = "error";
       }
     });
-    
+  }
     /*-------------------------------------
         Login Form initiating
     -------------------------------------*/
