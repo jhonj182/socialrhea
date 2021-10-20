@@ -1,0 +1,12 @@
+<ul class="chat-conversion">
+  {% for mensaje in mensajes %}
+    <li class="chat-others">
+        <div class="author-img">
+            <img src="/static/uploads/imgusuarios/{{ receptor.Foto }}" width="50" height="50" alt="{{ receptor.Nombres }}">
+        </div>
+        <div class="author-text">
+            <span>{{ mensaje.Mensaje }}</span>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

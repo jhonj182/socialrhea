@@ -13,7 +13,6 @@ UPLOAD_FOLDER = 'static/uploads'
 UPLOAD_IMG_FOLDER = 'static/uploads/imgusuarios'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
-dbUsuario = {}
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -21,8 +20,7 @@ app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
+           
 @app.route('/upload/<user>', methods=['GET', 'POST'])
 def upload_file(user):
   now = datetime.now()
@@ -34,6 +32,7 @@ def upload_file(user):
     visibilidad = request.form['Visibilidad']
     idUser = request.form['idUser']
     filenames = []
+    estado= db.addPost(status, Titulo, idUser, visibilidad, postToken)
     for file in files:
       filename = secure_filename(file.filename)
       try:
@@ -44,7 +43,6 @@ def upload_file(user):
           return 'Error, folder does not exist'
     arregloImagenes = ",".join(filenames)
     print(arregloImagenes)
-    estado= db.addPost(arregloImagenes , status, Titulo, idUser, visibilidad, postToken)
     if estado:
           arreglo = arregloImagenes.split(',')
           for imagen in arreglo:
@@ -59,11 +57,9 @@ def login():
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
-    dbUser = db.getUser(username)
-    if dbUser['Usuario'] == username and dbUser['Contrasena'] == password:
+    dbUsuario = db.getUser(username)
+    if dbUsuario['Usuario'] == username and dbUsuario['Contrasena'] == password:
       session["usuario"] = username
-      global dbUsuario
-      dbUsuario= dbUser
       return redirect('feed/'+username)
     else:
       error = "usuario o clave invalidos"
@@ -85,17 +81,18 @@ def main_page(user):
   dbUsuario = db.getUser(user)
   if(dbUsuario):
     output = db.getPosts(dbUsuario['ID_Usuario'])
-    print(dbUsuario['ID_Usuario'])
-    print(output)
-    db.getFotos(output)
-    usuarios = db.getUsers()
+    print("busqueda de Usuario desde app.py")
+    print(dbUsuario)
+    print("busqueda de fotos desde app.py")
+    print(db.getFotos(output))
+    usuarios = db.getUsers(dbUsuario['ID_Usuario'])
     return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios)
   else:
     return redirect('/')
 
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-  usuarios = db.getUsers()
+  usuarios = db.getUsers(dbUsuario['ID_Usuario'])
   auth = False
   if user == session['usuario']:
     auth = True
@@ -103,12 +100,12 @@ def profile(user):
     return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, usuarios = usuarios)
   else:
     output = db.getPostByUser(user)
-    dbUser2 = db.getUser(user)
-    relacion = db.getRelacion(dbUsuario['id_usuario'], dbUser2['id_usuario'])
-    if dbUser2['Usuario'] == user:
+    dbUsuario2 = db.getUser(user)
+    relacion = db.getRelacion(dbUsuario['id_usuario'], dbUsuario2['id_usuario'])
+    if dbUsuario2['Usuario'] == user:
       usr = True
     print (relacion)
-    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUser2, usuarios = usuarios, relacion=relacion)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion)
 
 @app.route('/agregaramigo/<user>', methods=['GET'])
 def crearAmigo(user):
@@ -129,19 +126,22 @@ def eliminarAmigo(user):
       flash('si se pudo eliminar', 'success')
       return redirect(f'/profile/{user}')
 
-@app.route('/mensajes/<user>/<receptor>', methods=['GET', 'POST'])
-def busqueda_msg(user, receptor):
-  dbUser = db.getUser(user)
-  usuarios = db.getUsers()
-  recept = db.getUser(receptor)
-  mensajes = db.getMensaje(dbUser['id_usuario'], recept['id_usuario'])
-  if request.method == "POST":
-    mensaje = request.form['mensaje']
-    db.addMensaje(dbUser['id_usuario'], recept['id_usuario'], mensaje )
-    return redirect(f'/mensajes/{user}/{receptor}')
-  else:
-    usuarios = db.getUsers()
-    return render_template('mensajes.html', usuario=dbUser, receptor=recept, mensajes=mensajes,  usuarios = usuarios)
+@app.route('/mensajes/<user>/<recept>', methods=['GET'])
+def busqueda_msg(user, recept):
+  dbUsuario = db.getUser(user)
+  usuarios = db.getUsers(dbUsuario['ID_Usuario'])
+  rece = db.getUser(recept)
+  mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
+  print((mensajes))
+  # if request.method == "POST":
+  #   mensaje = request.form['mensaje']
+  #   db.addMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'], mensaje )
+  #   mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
+  #   return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
+  # else:
+  print("entro por get")
+  # return F"Hola {user} y {recept}"
+  return render_template('testmensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=["GET","POST"])
@@ -168,7 +168,7 @@ def amigos(user):
   if user == session['usuario']:
   
     if request.method == 'GET':
-      resultado = db.getUsers()
+      resultado = db.getUsers(dbUsuario['ID_Usuario'])
       return render_template('amigos.html', usuario=dbUsuario, respuestas=resultado)
   else:
     return redirect('login', usuario=usr)
@@ -217,8 +217,8 @@ def admin_login():
     if username == 'admin' and password == 'admin':
       session["usuario"] = 'john_tama'
       global dbUsuario
-      dbUser = db.getUser(session["usuario"])
-      dbUsuario= dbUser
+      dbUsuario = db.getUser(session["usuario"])
+      dbUsuario= dbUsuario
       print(dbUsuario)
       return redirect('admin/'+username)
     else:
@@ -233,7 +233,7 @@ def admin_login():
 @app.route('/admin/users', methods=['GET', 'POST'])
 def admin_users():
   if session['usuario']:
-    usuarios = db.getUsers()
+    usuarios = db.getUsers(dbUsuario['ID_Usuario'])
     return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios)
 
 @app.route('/admin/superusers', methods=['GET', 'POST'])
@@ -412,12 +412,6 @@ def editarperfil():
 def RecuperaU():
     return render_template('olvidar.html', methods=('POST'))
   
-@app.route('/getmensajes')
-def getmensajes():
-    mensajes = db.getMensajes()
-    print(mensajes)
-    return render_template('olvidar.html', methods=('POST'))
-
 # @app.before_request
 # def antes_de_cada_peticion():
 #     ruta = request.path

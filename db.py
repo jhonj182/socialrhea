@@ -23,25 +23,29 @@ def getUser(user):
       print(f"error in getUser() : {str(e)}"  )
 
 def getFotos(Posts):
-    conn= conectar()
-    token = Posts[2]['token']
-    try:
-      conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM Foto WHERE token = ?'
-      cursor = conn.execute(sql, (token,))
-      resultados = (cursor.fetchall())
-      results = [ dict(row) for row in resultados ]
-      conn.close()
-      print(token)
-      print(resultados)
-      if not results:
-        return False
-      else:
-        print("Las fotos son:")
+    dResultados = {}
+    dList = []
+    for post in Posts:
+      # print(post)
+      try:
+        conn= conectar()
+        token = post['token']
+        print(token)
+        conn.row_factory = sqlite3.Row
+        sql = 'SELECT * FROM Foto WHERE token = ?'
+        cursor = conn.execute(sql, (token,))
+        resultados = (cursor.fetchall())
+        results = [ dict(row) for row in resultados ]
         print(results)
-        return results
-    except Error as e:
-      print(f"error in getFotos() : {str(e)}"  )
+        dResultados = results
+        dList.append(dResultados)
+        dResultados = {}
+        conn.close()
+      except Error as e:
+        print(f"error in getFotos() : {str(e)}"  )
+      print("Las fotos son:")
+      print(dList)
+      return(dList)
 
 def getUserAdmin(user):
     conn= conectar()
@@ -91,11 +95,12 @@ def getUsersByName(user):
     except Error as e:
       print(f"error in getUser() : {str(e)}"  )
 
-def getUsers():
+def getUsers(idUsuario):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      cursor= conn.execute("SELECT * FROM Usuario WHERE rol=2;")
+      sql = 'SELECT * FROM Usuario WHERE rol=? AND Not ID_Usuario = ?'
+      cursor= conn.execute(sql,(2, idUsuario))
       resultado = (cursor.fetchall())
       results = [ dict(row) for row in resultado ]
       conn.close()
@@ -107,15 +112,15 @@ def getMensaje(emisor, receptor):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM tbl_mensajes where (remitente = ? OR remitente = ?) AND (receptor = ? OR receptor = ?);'
+      sql = 'SELECT * FROM Mensajes_Privados where (ID_Remitente = ? OR ID_Destinatario = ?) AND (ID_Destinatario = ? OR ID_Remitente = ?);'
       cursor= conn.execute(sql, (emisor, receptor, receptor, emisor))
       resultado = (cursor.fetchall())
       results = [ dict(row) for row in resultado ]
-      print(results)
       conn.close()
       return results
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getMensaje() : {str(e)}"  )
+      return("false")
 
 
 def getRelacion(emisor, receptor):
@@ -213,7 +218,7 @@ def addFoto(imagen, token):
 def addMensaje(remitente, receptor, contenido):
     try :
         conn=conectar()
-        conn.execute("insert into tbl_mensajes (remitente, receptor, contenido) values(?,?,?);", (remitente, receptor, contenido))
+        conn.execute("INSERT into Mensajes_Privados (ID_Remitente, ID_Destinatario, Mensaje) values(?,?,?);", (remitente, receptor, contenido))
         conn.commit()
         conn.close()
         return True
