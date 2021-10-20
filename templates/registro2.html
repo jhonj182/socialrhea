@@ -114,10 +114,9 @@
                                     <div class="form-group">
                                         <label for="Genero">Genero: </label>
                                         <select id="Genero" name="Genero" class="form-control js-user">
-                                            <option value="Masculino">Masculino</option>
-                                            <option value="Femenino">Femenino</option>
-                                            <option value="No_Binario">No Binario</option>
-                                            <option value="LGTBI">LGTBI+</option>
+                                            <option value="0">Masculino</option>
+                                            <option value="1">Femenino</option>
+                                            <option value="2">No Binario</option>
                                         </select>
                                     </div>
                                     
@@ -126,19 +125,14 @@
                                     <div class="form-group">
                                         <label for="Estado_Civil">Estado Civil: </label>
                                         <select id="Estado_Civil" name="Estado_Civil" class="form-control js-user">
-                                            <option value="Soltero">Soltero</option>
-                                            <option value="Casado">Casado</option>
-                                            <option value="Union_Libre">Unión Libre</option>
-                                            <option value="Separado">Separado</option>
-                                            <option value="Poliamor">Poliamor</option>
+                                            <option value="1">Soltero</option>
+                                            <option value="2">Casado</option>
                                         </select>
-                                    </div>
-                                    
-                            
-<div class="form-group">
-    <label for="Email">Email: </label>
-    <input type="email" id="mail" name="Email" class="form-control js-user" title="Email Incorrecto" pattern="^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required/></div>
-<!--Se podría validar que al seleccionar un país, cambie este campo y genere el listado de ciudades del país seleccionado-->
+                                    </div>              
+                                    <div class="form-group">
+                                        <label for="Email">Email: </label>
+                                        <input type="email" id="mail" name="Email" class="form-control js-user" title="Email Incorrecto" pattern="^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required/></div>
+                                    <!--Se podría validar que al seleccionar un país, cambie este campo y genere el listado de ciudades del país seleccionado-->
                                     <div class="js-country-flags">
                                       <label for="Ciudad">Pais: </label>
                                       <img
@@ -388,7 +382,7 @@
                                     <!--Aquí toca traer la información de la BD en una tabla que se llame pais (campos país / ciudad / indicativo) -->
                                     <!--Indicativo depende del país y de la ciudad-->
                                     <div><label for="Telefono">Telefono: </label>
-                                        <select id="Indicativo" name="Indicativo">
+                                        <select id="Indicativo" name="indicativo">
                                             <option value="601">+601</option>
                                             <option value="602">+602</option>
                                             <option value="603">+603</option>
@@ -396,6 +390,12 @@
                                             <option value="605">+605</option>
                                         </select>
                                         <input type="text" id="Telefono" name="Telefono" class="form-control js-user"/>
+                                    </div>
+                                    <div><label for="Telefono">Privacidad: </label>
+                                        <select id="Indicativo" name="Privacidad">
+                                            <option value="1">Público</option>
+                                            <option value="2">Privado</option>
+                                        </select>
                                     </div>
                                     
                             
@@ -412,7 +412,7 @@
                                     
                                     <div class="account-create">
                                         <!-- <button type="submit" value="Enviar">Enviar</button> -->
-                                        <button type="submit" class="btn btn-primary submit-btn" href="/registro">Enviar</a>
+                                        <button type="submit" class="btn btn-primary submit-btn" href="/registro">Registrarme</a>
                                     </div>
                                 </form>
                     	</div>

@@ -3345,10 +3345,13 @@ z-index: -1;
 }
 
 .chat-conversion-box {
+  height: 80vh;
+  width: 900px;
+  margin: 0 auto;
+  background: #fff;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   position: relative;
-  z-index: 100;
 }
 
 .chat-conversion-box .modal-dialog {
@@ -3388,6 +3391,7 @@ margin: 0 auto;
 
 .chat-conversion-box .modal-header {
   padding: 0 15px;
+  height: 50px ;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -ms-flex-align: center;
@@ -3397,7 +3401,6 @@ margin: 0 auto;
 }
 
 .chat-conversion-box .modal-header .modal-title {
-  height: 100px;
   color: #ffffff;
   position: relative;
 }

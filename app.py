@@ -6,10 +6,13 @@ import json
 from werkzeug.utils import secure_filename
 import utils
 import validacion as valida
+from datetime import date
+from datetime import datetime
 
 UPLOAD_FOLDER = 'static/uploads'
 UPLOAD_IMG_FOLDER = 'static/uploads/imgusuarios'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 dbUsuario = {}
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -22,9 +25,14 @@ def allowed_file(filename):
 
 @app.route('/upload/<user>', methods=['GET', 'POST'])
 def upload_file(user):
+  now = datetime.now()
+  postToken = now.strftime('%d%m%Y%H%M%S%f')
   if request.method == 'POST':
     files = request.files.getlist("file[]")
+    Titulo = request.form['TituloPost']
     status = request.form['status-input']
+    visibilidad = request.form['Visibilidad']
+    idUser = request.form['idUser']
     filenames = []
     for file in files:
       filename = secure_filename(file.filename)
@@ -34,38 +42,36 @@ def upload_file(user):
           filenames.append(filename)
       except FileNotFoundError :
           return 'Error, folder does not exist'
-    a = ",".join(filenames)
-    estado= db.addPost(a , "post", status, user)
+    arregloImagenes = ",".join(filenames)
+    print(arregloImagenes)
+    estado= db.addPost(arregloImagenes , status, Titulo, idUser, visibilidad, postToken)
     if estado:
-          return redirect(f'/feed/{user}')
+          arreglo = arregloImagenes.split(',')
+          for imagen in arreglo:
+            db.addFoto(imagen, postToken)
+          return redirect(f'/feed')
     else :
         return "<h1>Fallo proceso de Registro.</h1>" 
 
-@app.route('/', methods=('GET', 'POST'))
+@app.route('/', methods=['GET', 'POST'])
 def login():
   error = ""
-  usr = False
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
     dbUser = db.getUser(username)
-    if dbUser['User'] == username and dbUser['passwrd'] == password:
-      usr = True
-    if usr:
+    if dbUser['Usuario'] == username and dbUser['Contrasena'] == password:
       session["usuario"] = username
       global dbUsuario
       dbUsuario= dbUser
-      return redirect('feed')
+      return redirect('feed/'+username)
     else:
       error = "usuario o clave invalidos"
       flash(error, 'error')
       return render_template('login.html');
   else:
-      if (session):
-        return redirect('feed')
-      else:
-        flash("Por favor iniciar sesion", 'error')
-        return render_template('login.html');
+      flash("Por favor iniciar sesion", 'error')
+      return render_template('login.html');
     
     # return jsonify({"encontrado" : encontrado})
 
@@ -74,52 +80,82 @@ def logout():
   session['usuario'] = None
   return redirect("/")
 
-@app.route('/feed')
-def main_page():
-  usr = []
+@app.route('/feed/<user>')
+def main_page(user):
+  dbUsuario = db.getUser(user)
   if(dbUsuario):
-    output = db.getPosts()
-    return render_template('feed.html', usuario=dbUsuario, output=output)
+    output = db.getPosts(dbUsuario['ID_Usuario'])
+    print(dbUsuario['ID_Usuario'])
+    print(output)
+    db.getFotos(output)
+    usuarios = db.getUsers()
+    return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios)
   else:
     return redirect('/')
 
-@app.route('/profile/<user>', methods=('GET', 'POST'))
+@app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-  usr = []
+  usuarios = db.getUsers()
   auth = False
   if user == session['usuario']:
     auth = True
     output = db.getPostByUser(user)
-    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, usuarios = usuarios)
   else:
     output = db.getPostByUser(user)
     dbUser2 = db.getUser(user)
-    if dbUser2['User'] == user:
+    relacion = db.getRelacion(dbUsuario['id_usuario'], dbUser2['id_usuario'])
+    if dbUser2['Usuario'] == user:
       usr = True
-    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUser2)
+    print (relacion)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUser2, usuarios = usuarios, relacion=relacion)
 
-@app.route('/mensajes/<user>', methods=('GET', 'POST'))
-def busqueda_msg(user):
-  usr = []
-  if user == session['usuario']:
-  
-    return render_template('mensajes.html', usuario=dbUsuario)
+@app.route('/agregaramigo/<user>', methods=['GET'])
+def crearAmigo(user):
+    nuevoAmigo = db.getUser(user)
+    print(dbUsuario)
+    print(nuevoAmigo)
+    db.addAmigo(dbUsuario['id_usuario'], nuevoAmigo['id_usuario'])
+    return redirect(f'/profile/{user}')
+
+@app.route('/eliminaramigo/<user>', methods=['GET'])
+def eliminarAmigo(user):
+    nuevoAmigo = db.getUser(user)
+    answer = db.deleteRelacion(dbUsuario['id_usuario'], nuevoAmigo['id_usuario'])
+    if answer:
+      flash('No se pudo eliminar', 'error')
+      return redirect(f'/profile/{user}')
+    else:
+      flash('si se pudo eliminar', 'success')
+      return redirect(f'/profile/{user}')
+
+@app.route('/mensajes/<user>/<receptor>', methods=['GET', 'POST'])
+def busqueda_msg(user, receptor):
+  dbUser = db.getUser(user)
+  usuarios = db.getUsers()
+  recept = db.getUser(receptor)
+  mensajes = db.getMensaje(dbUser['id_usuario'], recept['id_usuario'])
+  if request.method == "POST":
+    mensaje = request.form['mensaje']
+    db.addMensaje(dbUser['id_usuario'], recept['id_usuario'], mensaje )
+    return redirect(f'/mensajes/{user}/{receptor}')
+  else:
+    usuarios = db.getUsers()
+    return render_template('mensajes.html', usuario=dbUser, receptor=recept, mensajes=mensajes,  usuarios = usuarios)
   # return render_template('')
 
-@app.route('/busqueda/<user>', methods=("GET", "POST"))
+@app.route('/busqueda/<user>', methods=["GET","POST"])
 def busqueda(user):
   usr = []
-  if user == session['usuario']:
-    dbUser = db.getUser(user)
-    if dbUser['User'] == user:
-      usr = True
-    if request.method == 'POST':
-      resultado = request.form['busqueda']
-      respuesta = db.getUsersByName(resultado)
-      return render_template('busqueda.html', usuario=dbUsuario, respuestas=respuesta)
+  session['usuario'] = user
+  dbUsuario = db.getUser(user)
+  print(dbUsuario)
+  if request.method == 'POST':
+    resultado = request.form['busqueda']
+    respuesta = db.getUsersByName(resultado)
+    return render_template('busqueda.html', usuario=dbUsuario, respuestas=respuesta)
   else:
-    return render_template('busqueda.html', usuario=usr)
-  # return render_template('')
+    return redirect('/feed')
 
 @app.route('/amigos/')
 def amigo():
@@ -128,6 +164,7 @@ def amigo():
 @app.route('/amigos/<user>')
 def amigos(user):
   usr = []
+  session['usuario'] = user
   if user == session['usuario']:
   
     if request.method == 'GET':
@@ -138,9 +175,9 @@ def amigos(user):
 
 @app.route('/fotos/<user>', methods=['GET', 'POST'])
 def fotos(user):
+  session['usuario'] = user
   if user == session['usuario']:
     output = db.getPosts()
-  
     return render_template('fotos.html', usuario=dbUsuario, respuestas=output)
   else:
     return redirect('/feed', session['usuario'])
@@ -160,16 +197,16 @@ def deletePost(idPost):
     return redirect('/fotos/'+ usr)
   pass
 
-@app.route('/admin/<user>', methods=('GET', 'POST'))
+@app.route('/admin/<user>', methods=['GET', 'POST'])
 def admin(user):
   if user == 'admin':
     print(dbUsuario)
     print(session["usuario"])
-    return render_template('dashboard.html', usuario = dbUsuario)
+    return render_template('dashboard.html', usuario=dbUsuario)
   else:
     return redirect('/')
 
-@app.route('/admin-login', methods=('GET', 'POST'))
+@app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
   error = ""
   usr = False
@@ -193,15 +230,15 @@ def admin_login():
     return render_template('admin-login.html');
 
 
-@app.route('/admin/users', methods=('GET', 'POST'))
+@app.route('/admin/users', methods=['GET', 'POST'])
 def admin_users():
-
   if session['usuario']:
     usuarios = db.getUsers()
     return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios)
 
-@app.route('/admin/superusers', methods=('GET', 'POST'))
+@app.route('/admin/superusers', methods=['GET', 'POST'])
 def admin_superusers():
+
   if session['usuario']:
     usuarios = db.getSuperUsers()
     return render_template('dashboard-superuser.html', usuario=dbUsuario, usuarios=usuarios)
@@ -232,7 +269,7 @@ def deleteAdmin(user):
       return redirect('/admin/superusers')
   pass
 #DBERNAL - Registro de nuevo usuario en la red social
-@app.route('/registro', methods=('GET', 'POST'))
+@app.route('/registro', methods=['GET', 'POST'])
 def Nuevo_Usuario():
   if request.method == 'POST':
     nombres = request.form['Nombres']
@@ -240,8 +277,13 @@ def Nuevo_Usuario():
     usuario = request.form['Usuario']
     password = request.form['Password']
     rpassword = request.form['Rpassword']
+    genero = request.form['Genero']
+    Estado_Civil = request.form['Estado_Civil']
     email = request.form['Email']
     pais = request.form['Pais']
+    telefono = request.form['Telefono']
+    privacidad = request.form['Privacidad']
+    nacimiento = request.form['FechaN']
     error = None
     if 'file' not in request.files:
             flash('No file part')
@@ -274,14 +316,14 @@ def Nuevo_Usuario():
       error = 'Correo invalido'
       flash(error)
       return render_template('registro2.html')
-    db.addUser(usuario, nombres, password, filename, filename, pais)
+    db.addUser(usuario, password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad)
     session["usuario"] = usuario
     return redirect('feed/'+session["usuario"])
 
   else:    
     return render_template('registro2.html')
 
-@app.route('/admin/createadmin', methods=('GET', 'POST'))
+@app.route('/admin/createadmin', methods=['GET', 'POST'])
 def Nuevo_Admin():
   if request.method == 'POST':
     nombres = request.form['Nombres']
@@ -369,15 +411,21 @@ def editarperfil():
 @app.route('/olvidar')
 def RecuperaU():
     return render_template('olvidar.html', methods=('POST'))
+  
+@app.route('/getmensajes')
+def getmensajes():
+    mensajes = db.getMensajes()
+    print(mensajes)
+    return render_template('olvidar.html', methods=('POST'))
 
-@app.before_request
-def antes_de_cada_peticion():
-    ruta = request.path
-    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
-        flash("Inicia sesión para continuar")
-        return redirect("/")
-    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
+# @app.before_request
+# def antes_de_cada_peticion():
+#     ruta = request.path
+#     # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
+#     if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
+#         flash("Inicia sesión para continuar")
+#         return redirect("/")
+#     # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 # Main
 if __name__=='__main__':

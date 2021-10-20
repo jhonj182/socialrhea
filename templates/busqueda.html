@@ -20,15 +20,15 @@
               <div class="widget-author">
                   <div class="author-heading">
                       <div class="cover-img">
-                          <img src="{{ respuesta.highPic }}" alt="cover">
+                          <img src="/static/uploads/imgusuarios/{{ respuesta.FotoCover }}" alt="cover">
                       </div>
                       <div class="profile-img">
-                          <a href="/profile/{{ respuesta.User }}">
-                              <img src="{{ respuesta.profPic }}" width="150" height="150" alt="author">
+                          <a href="/profile/{{ respuesta.Usuario }}">
+                              <img src="/static/uploads/imgusuarios/{{ respuesta.Foto }}" width="150" height="150" alt="author">
                           </a>
                       </div>
                       <div class="profile-name">
-                          <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.name}}</a></h4>
+                          <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.Nombre}}</a></h4>
                           <div class="author-location">{{respuesta.country}}</div>
                       </div>
                   </div>

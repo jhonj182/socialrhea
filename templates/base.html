@@ -43,7 +43,7 @@
                     </div>
                     <div class="nav-item header-control">
                         <div class="inline-item d-none d-md-block">
-                          <form action="/busqueda/{{usuario.User}}" method="POST" class="js-search">
+                          <form action="/busqueda/{{ usuario.Usuario }}" method="POST" class="js-search">
                             <div class="input-group">
                               <input type="text" class="form-control" name="busqueda" placeholder="Buscar Amigos.......">
                               <div class="input-group-append">
@@ -217,14 +217,14 @@
                         </div>
                         <div class="inline-item">
                             <div class="dropdown dropdown-admin">
-                                <a href="/profile/{{ usuario.User }}" class="dropdown-toggle"></button>
+                                <a href="/profile/{{ usuario.Usuario }}" class="dropdown-toggle"></button>
                                     <span class="media">
                                         <span class="item-img">
-                                            <img src="{{ usuario.profPic }}" width="50" height="50" alt="{{ usuario.name }}"> 
+                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}"> 
                                             <span class="acc-verified"><i class="icofont-check"></i></span>
                                         </span>
                                         <span class="media-body">
-                                            <span class="item-title">{{ usuario.name }}</span>
+                                            <span class="item-title">{{ usuario.Nombre }}</span>
                                         </span>
                                     </span>
                                   </a>
@@ -247,11 +247,11 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.User }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
-                            <li><a href="/mensajes/{{ usuario.User }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="MENSAJES"><i class="icofont-chat"></i></a></li>
-                            <li><a href="/profile/{{ usuario.User }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-user"></i></a></li>
-                            <li><a href="/amigos/{{ usuario.User }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
-                            <li><a href="/fotos/{{ usuario.User }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
+                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
+                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="MENSAJES"><i class="icofont-chat"></i></a></li>
+                            <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-user"></i></a></li>
+                            <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
+                            <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
                             <li><a href="/logout" class="menu-link" data-toggle="tooltip" data-placement="right" title="Cerrar Sesion"><i class="icofont-logout"></i></a></li>
                         </ul>
                     </div>
@@ -271,19 +271,19 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.User }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                            <li><a href="/mensajes/{{ usuario.User }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
-                            <li><a href="/profile/{{ usuario.User }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
-                            <li><a href="/amigos/{{ usuario.User }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
-                            <li><a href="/fotos/{{ usuario.User }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
+                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                            <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
+                            <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                            <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
                             <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                         <ul class="top-menu-mobile">
-                          <li><a href="/feed/{{ usuario.User }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                          <li><a href="/mensajes/{{ usuario.User }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
-                          <li><a href="/profile/{{ usuario.User }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
-                          <li><a href="/amigos/{{ usuario.User }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
-                          <li><a href="/fotos/{{ usuario.User }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
+                          <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
+                          <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                          <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
+                          <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
+                          <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
                           <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                     </div>
@@ -301,66 +301,16 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="user-chat-list">
+                          {% for user in usuarios %}
                             <li class="chat-item chat-open">
                                 <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                  <a href="/mensajes/{{usuario.Usuario}}/{{ user.Usuario }}">
+                                    <img src="/static/uploads/imgusuarios/{{user.Foto}}" width="50" height="50" alt="{{ user.Nombre }}">
                                     <span class="chat-status offline"></span>
+                                  </a>
                                 </div>
                             </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="chat_6.jpg" alt="{{ usuario.name }}">
-                                    <span class="chat-status online"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
-                            <li class="chat-item chat-open">
-                                <div class="author-img">
-                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
-                                    <span class="chat-status offline"></span>
-                                </div>
-                            </li>
+                          {% endfor %}
                         </ul>
                     </div>
                 </div>

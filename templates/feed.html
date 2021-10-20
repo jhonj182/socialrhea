@@ -39,23 +39,30 @@
                                     <a class="nav-link" data-toggle="tab" href="#post-media" role="tab" aria-selected="false"><i class="icofont-image"></i>Subir Foto / Album</a>
                                 </li>
                               </ul>
-                          <form action="/upload/{{ usuario.User }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
+                          <form action="/upload/{{ usuario.Usuario }}" method="POST" enctype="multipart/form-data" class="js-post-form"/>
                             <div class="tab-content">
+                                <div class="tab-pane fade show active" id="post-media" role="tabpanel">
+                                    <input type="text" name="TituloPost" id="status-input8" class="form-control textarea" placeholder="Titulo" value=""></input>
+                                </div>
                                 <div class="tab-pane fade show active" id="post-media" role="tabpanel">
                                     <textarea name="status-input" id="status-input2" class="form-control textarea" placeholder="Comparte en que estas pensando... . . ." cols="30" rows="6" value=""></textarea>
                                 </div>
-
                             </div>
                             <!-- Image preview -->
                             <div id="imagePreview" class="imagePreview"></div>
                             <div class="post-footer">
                                 <div class="insert-btn">
-                                  
                                     <span class="error" aria-live="polite"></span>
                                     <label for="upload"><a><i class="icofont-photobucket"></i></a></label>
                                     <input type="file" name="file[]" class="js-imginput d-none"id="upload" accept="image/png, .jpeg, .jpg, image/gif" multiple>
                                     <a href="#"><i class="icofont-tags"></i></a>
                                     <a href="#"><i class="icofont-location-pin"></i></a>
+                                    <select id="Estado_Civil" name="Visibilidad" class="js-user">
+                                      <option value="" disabled selected >Visibilidad</option>
+                                      <option value="0">Publico</option>
+                                      <option value="1">Privado</option>
+                                  </select>
+                                  <input type="hidden" name="idUser" value="{{usuario.ID_Usuario}}">
                                     <input type="submit" class="submit-btn js-imgsubmit" value="Enviar Post" onsubmit="validarPost()">
                                   </div>
                                 </div>
@@ -67,7 +74,7 @@
                             <div class="post-header">
                                 <div class="media">
                                     <div class="user-img">
-                                        <img src="{{ usuario.profPic }}" width="50" height="50" alt="Aahat">
+                                        <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="Aahat">
                                     </div>
                                     <div class="media-body">
                                         <div class="user-title"><a href="/profile/{{ pro[4] }}">{{ pro[4] }}</a> <i class="icofont-check"></i> uploaded <a href="#"></a> </div>
@@ -184,11 +191,11 @@
                                 </div>
                                 <div class="profile-img">
                                     <a href="#">
-                                      <img src="{{ usuario.profPic }}" width="125" height="125" alt="{{ usuario.name }}">
+                                      <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="125" height="125" alt="{{ usuario.Nombres }}">
                                     </a>
                                 </div>
                                 <div class="profile-name">
-                                    <h4 class="author-name"><a href="#">{{ usuario.name }}</a></h4>
+                                    <h4 class="author-name"><a href="#" style="text-transform: capitalize;">{{ usuario.Nombres }}</a></h4>
                                     <div class="author-location">United State Of America</div>
                                 </div>
                             </div>
@@ -241,7 +248,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -253,7 +260,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -265,7 +272,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -277,7 +284,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -293,7 +300,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -305,7 +312,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -317,7 +324,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -329,7 +336,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -345,7 +352,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -357,7 +364,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -369,7 +376,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -381,7 +388,7 @@
                                         <div class="media">
                                             <div class="item-img">
                                                 <a href="#">
-                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                                    <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -599,7 +606,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="chat_10.jpg" alt="{{ usuario.name }}">
+                                            <img src="chat_10.jpg" alt="{{ usuario.Nombres }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -614,7 +621,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -629,7 +636,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.name }}">
+                                            <img src="{{ url_for('static', filename='assets/img/chat_5.jpg' ) }}" alt="{{ usuario.Nombres }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
@@ -644,7 +651,7 @@
                                 <div class="media">
                                     <div class="item-img">
                                         <a href="#">
-                                            <img src="chat_6.jpg" alt="{{ usuario.name }}">
+                                            <img src="chat_6.jpg" alt="{{ usuario.Nombres }}">
                                         </a>
                                     </div>
                                     <div class="media-body">
