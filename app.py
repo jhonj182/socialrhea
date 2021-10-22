@@ -92,12 +92,17 @@ def main_page(user):
 
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
+  dbUsuario = db.getUser(user)
   usuarios = db.getUsers(dbUsuario['ID_Usuario'])
+  session['usuario'] = user
   auth = False
   if user == session['usuario']:
     auth = True
-    output = db.getPostByUser(user)
-    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, usuarios = usuarios)
+    output = db.getPostByUser(dbUsuario['ID_Usuario'])
+    print (output)
+    jsonStr = json.dumps(output)
+    return jsonify( posts = jsonStr )
+    # return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, usuarios = usuarios)
   else:
     output = db.getPostByUser(user)
     dbUsuario2 = db.getUser(user)
@@ -126,22 +131,19 @@ def eliminarAmigo(user):
       flash('si se pudo eliminar', 'success')
       return redirect(f'/profile/{user}')
 
-@app.route('/mensajes/<user>/<recept>', methods=['GET'])
+@app.route('/mensajes/<user>/<recept>', methods=['GET', 'POST'])
 def busqueda_msg(user, recept):
   dbUsuario = db.getUser(user)
   usuarios = db.getUsers(dbUsuario['ID_Usuario'])
   rece = db.getUser(recept)
   mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
-  print((mensajes))
-  # if request.method == "POST":
-  #   mensaje = request.form['mensaje']
-  #   db.addMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'], mensaje )
-  #   mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
-  #   return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
-  # else:
-  print("entro por get")
-  # return F"Hola {user} y {recept}"
-  return render_template('testmensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
+  if request.method == "POST":
+    mensaje = request.form['mensaje']
+    db.addMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'], mensaje )
+    mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
+    return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
+  else:
+    return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=["GET","POST"])

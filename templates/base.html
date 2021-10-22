@@ -11,9 +11,9 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon.png' ) }}">
     <!-- Site Stylesheet -->
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/icofont/icofont.min.css' ) }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/icofont/icofont.min.css' ) }}">
     
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
@@ -220,11 +220,11 @@
                                 <a href="/profile/{{ usuario.Usuario }}" class="dropdown-toggle"></button>
                                     <span class="media">
                                         <span class="item-img">
-                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombres }}"> 
+                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}"> 
                                             <span class="acc-verified"><i class="icofont-check"></i></span>
                                         </span>
                                         <span class="media-body">
-                                            <span class="item-title">{{ usuario.Nombres }}</span>
+                                            <span class="item-title">{{ usuario.Nombre }}</span>
                                         </span>
                                     </span>
                                   </a>
@@ -321,10 +321,10 @@
         {% endblock %}
   </div>
   <!-- Jquery Js -->
-  <!-- <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
-  <!-- <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}" defer></script> -->
+  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}" defer></script>
   <!-- Site Scripts -->
-  <!-- <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script> -->
-</body> -->
+  <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script>
+</body>
 
 </html>

@@ -112,7 +112,7 @@ def getMensaje(emisor, receptor):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM Mensajes_Privados where (ID_Remitente = ? OR ID_Destinatario = ?) AND (ID_Destinatario = ? OR ID_Remitente = ?);'
+      sql = 'SELECT * FROM Mensajes_Privados where (ID_Remitente = ? OR ID_Remitente = ?) AND (ID_Destinatario = ? OR ID_Destinatario = ?);'
       cursor= conn.execute(sql, (emisor, receptor, receptor, emisor))
       resultado = (cursor.fetchall())
       results = [ dict(row) for row in resultado ]
@@ -178,12 +178,22 @@ def getPosts(idUsuario):
     except Error as e:
       print(f"error in getPost() : {str(e)}"  )
 
-def getPostByUser(user):
+def getPostByUser(idUser):
     conn= conectar()
-    cursor= conn.execute("SELECT * FROM imagenes WHERE user = '"+ user +"' ORDER BY codigo DESC;")
-    resultados= list(cursor.fetchall())
-    conn.close()
-    return resultados
+    try:
+      conn.row_factory = sqlite3.Row
+      sql = 'SELECT * FROM Post WHERE ID_Usuario = ? ORDER BY ID_Post DESC;'
+      cursor= conn.execute(sql, (idUser,))
+      resultado = (cursor.fetchall())
+      print (resultado)
+      resultados= [ dict(row) for row in resultado ]
+      conn.close()
+      return resultados
+    except Error as e:
+      print(f"error in getMensaje() : {str(e)}"  )
+      return("false")
+
+  
 
 def getPostById(idPost):
     conn= conectar()
