@@ -67,7 +67,7 @@ def login():
       error = "usuario o clave invalidos"
       flash(error, 'error')
       return render_template('login.html');
-  else:
+  if request.method == 'GET':
       flash("Por favor iniciar sesion", 'error')
       return render_template('login.html');
     
