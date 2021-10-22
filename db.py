@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3.dbapi2 import Error
 
 def conectar():
-    dbname= 'socialrhea.db'
+    dbname= 'socialrhea2.db'
     conn= sqlite3.connect(dbname)
     return conn
 
@@ -169,7 +169,7 @@ def getPosts(idUsuario):
       print("Esta Buscando el usuario: "+str(idUsuario))
       conn= conectar()
       conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM Post WHERE ID_Usuario = ?;'
+      sql = 'SELECT * FROM Foto INNER JOIN Post on Foto.ID_Post = Post.ID_Post and post.ID_Usuario = ? GROUP BY Foto.ID_Post'
       cursor = conn.execute(sql, (idUsuario,))
       resultados= [ dict(row) for row in cursor ]
       print(resultados)
@@ -203,11 +203,10 @@ def getPostById(idPost):
     conn.close()
     return resultados
 
-def addPost(arregloImagenes , status, Titulo, idUser, visibilidad, postToken):
-  
+def addPost(idUser, status, Titulo,  visibilidad):
     try :
         conn=conectar()
-        conn.execute("INSERT INTO Post (ID_Usuario , Titulo, Visibilidad, Descripcion, token) values(?,?,?,?,?);", (idUser, Titulo, visibilidad, status, postToken))
+        conn.execute("INSERT INTO Post (ID_Usuario , Titulo, Visibilidad, Descripcion) values(?,?,?,?);", (idUser, Titulo, visibilidad, status))
         conn.commit()
         conn.close()
         return True
@@ -215,14 +214,31 @@ def addPost(arregloImagenes , status, Titulo, idUser, visibilidad, postToken):
         print(error)
         return False
 
-def addFoto(imagen, token):
+def getLastPostId(idUser):
+  conn= conectar()
+  
+  try:
+    sql = 'SELECT ID_Post FROM Post WHERE ID_Post = (SELECT MAX(ID_Post) FROM Post) AND ID_Usuario = ?; '
+    cursor= conn.execute(sql, (idUser,))
+    resultados= (cursor.fetchone())
+    conn.close()
+    return resultados[0]
+  except Error as error:
+      print(f"error en get post by iduser: {error}")
+      return False
+
+def addFoto(idUser, imagen):
+    ID_Post = getLastPostId(idUser)
+    print(f"el id del post es {ID_Post}  {idUser}")
     try:
       conn=conectar()
-      conn.execute("INSERT INTO Foto (Ruta, token) values(?,?);", (imagen, token))
+      conn.execute("INSERT INTO Foto (ID_Post, Ruta) values(?,?);", (ID_Post, imagen))
       conn.commit()
       conn.close()
+      print(f"imagen agregada{imagen}")
       return True
     except Error as error:
+      print(f"imagen no agregada{imagen}: {error}")
       return False
 
 def addMensaje(remitente, receptor, contenido):
@@ -242,6 +258,19 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
     try :
         conn=conectar()
         conn.execute("INSERT INTO Usuario (Usuario, Contrasena, Rol, Estado, Nombres, Apellidos, Genero, Email, Ubicacion, Foto, Telefono, Fecha_Nacimiento, Estado_Civil, Privacidad ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);", (usuario, password, rol, estado, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad))
+        conn.commit()
+        conn.close()
+        print('Registro Exitoso')
+        return True
+    except Error as error:
+        print("error en Add User:", error)
+        return False
+      
+def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais, filename, telefono , nacimiento):
+    try :
+        conn=conectar()
+        sql = 'UPDATE Usuario  SET Contrasena = ?, Nombres = ?, Apellidos = ?, Email = ?, Ubicacion = ?, Foto = ?, Telefono = ?, Fecha_Nacimiento = ? WHERE ID_Usuario = ?'
+        conn.execute(sql, (password, nombres, apellidos, email, pais, filename, telefono, Estado_Civil, nacimiento, usuario,))
         conn.commit()
         conn.close()
         print('Registro Exitoso')
@@ -271,17 +300,6 @@ def addAmigo(envia, recibe):
         return True
     except Error as error:
         print(error)
-        return False
-      
-def updateUser(user, nombres, password, filename, pais):
-    try :
-        print('entro')
-        conn=conectar()
-        conn.execute("UPDATE tbl_Users SET name=?, passwrd = ?, profPic = ?, country = ? WHERE user = ?;", (nombres, password, filename, pais, user))
-        conn.commit()
-        conn.close()
-        return True
-    except Error as error:
         return False
     
 def deleteUser(user):
