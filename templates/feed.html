@@ -96,16 +96,16 @@
                                 </div>
                             </div>
                             <div class="post-body">
-                                <p>{{ pro[3] }}</p>
-                                <div id="carouselExampleIndicators{{ pro[0] }}" class="carousel slide" data-ride="carousel">
+                                <p>{{ pro.titulo }}</p>
+                                <div id="carouselExampleIndicators{{ pro.ID_Foto }}" class="carousel slide" data-ride="carousel">
                                   {% set list1 = pro[1].split(',') %}
 
                                   <ol class="carousel-indicators">
                                     {% for item in list1 %}
                                       {% if loop.index == 1 %}
-                                        <li data-target="#carouselExampleIndicators{{ pro[0] }}" data-slide-to="{{loop.index}}" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators{{ pro.ID_Foto }}" data-slide-to="{{loop.index}}" class="active"></li>
                                         {% else %}
-                                        <li data-target="#carouselExampleIndicators{{ pro[0] }}" data-slide-to="{{loop.index}}"></li>
+                                        <li data-target="#carouselExampleIndicators{{ pro.ID_Foto }}" data-slide-to="{{loop.index}}"></li>
                                       {% endif %}
                                     {% endfor %} 
                                   </ol>
@@ -123,11 +123,11 @@
                                       {% endif %}
                                     {% endfor %} 
                                   </div>
-                                  <a class="carousel-control-prev" href="#carouselExampleIndicators{{ pro[0] }}" role="button" data-slide="prev">
+                                  <a class="carousel-control-prev" href="#carouselExampleIndicators{{ pro.ID_Foto }}" role="button" data-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Previous</span>
                                   </a>
-                                  <a class="carousel-control-next" href="#carouselExampleIndicators{{ pro[0] }}" role="button" data-slide="next">
+                                  <a class="carousel-control-next" href="#carouselExampleIndicators{{ pro.ID_Foto }}" role="button" data-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Next</span>
                                   </a>

@@ -169,9 +169,14 @@ def getPosts(idUsuario):
       print("Esta Buscando el usuario: "+str(idUsuario))
       conn= conectar()
       conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM Foto INNER JOIN Post on Foto.ID_Post = Post.ID_Post and post.ID_Usuario = ? GROUP BY Foto.ID_Post'
+      sql = 'SELECT * FROM Foto INNER JOIN Post on Foto.ID_Post = Post.ID_Post and post.ID_Usuario = ?'
       cursor = conn.execute(sql, (idUsuario,))
       resultados= [ dict(row) for row in cursor ]
+      for elem in resultados: #accedemos a cada elemento de la lista (en este caso cada elemento es un dictionario)
+        for k,v in elem.items():        #acedemos a cada llave(k), valor(v) de cada diccionario
+            if k == 'Ruta':
+              print("claves del dict")
+              print(k, v)
       print(resultados)
       conn.close()
       return resultados
