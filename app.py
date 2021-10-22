@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for, jsonify
+from flask_bcrypt import Bcrypt
 from flask.helpers import url_for
 import os
 import db
@@ -13,20 +14,17 @@ UPLOAD_FOLDER = 'static/uploads'
 UPLOAD_IMG_FOLDER = 'static/uploads/imgusuarios'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
-dbUsuario = {}
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
+           
 @app.route('/upload/<user>', methods=['GET', 'POST'])
-def upload_file(user):
-  now = datetime.now()
-  postToken = now.strftime('%d%m%Y%H%M%S%f')
+def upload_post(user):
   if request.method == 'POST':
     files = request.files.getlist("file[]")
     Titulo = request.form['TituloPost']
@@ -34,6 +32,7 @@ def upload_file(user):
     visibilidad = request.form['Visibilidad']
     idUser = request.form['idUser']
     filenames = []
+    estado = db.addPost(idUser, status, Titulo, visibilidad)
     for file in files:
       filename = secure_filename(file.filename)
       try:
@@ -44,12 +43,11 @@ def upload_file(user):
           return 'Error, folder does not exist'
     arregloImagenes = ",".join(filenames)
     print(arregloImagenes)
-    estado= db.addPost(arregloImagenes , status, Titulo, idUser, visibilidad, postToken)
     if estado:
           arreglo = arregloImagenes.split(',')
           for imagen in arreglo:
-            db.addFoto(imagen, postToken)
-          return redirect(f'/feed')
+            db.addFoto(idUser, imagen)
+          return redirect(f'/feed/{user}')
     else :
         return "<h1>Fallo proceso de Registro.</h1>" 
 
@@ -59,11 +57,11 @@ def login():
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
-    dbUser = db.getUser(username)
-    if dbUser['Usuario'] == username and dbUser['Contrasena'] == password:
+    dbUsuario = db.getUser(username)
+    pw_hash = dbUsuario['Contrasena']
+    check = bcrypt.check_password_hash(pw_hash, password) # returns True
+    if dbUsuario['Usuario'] == username and check :
       session["usuario"] = username
-      global dbUsuario
-      dbUsuario= dbUser
       return redirect('feed/'+username)
     else:
       error = "usuario o clave invalidos"
@@ -84,31 +82,36 @@ def logout():
 def main_page(user):
   dbUsuario = db.getUser(user)
   if(dbUsuario):
-    output = db.getPosts(dbUsuario['ID_Usuario'])
-    print(dbUsuario['ID_Usuario'])
-    print(output)
-    db.getFotos(output)
-    usuarios = db.getUsers()
-    return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios)
+    idUser = dbUsuario['ID_Usuario']
+    output = db.getPosts(4)
+    
+    print(output.get('ID_Post'))
+    usuarios = db.getUsers(dbUsuario['ID_Usuario'])
+    return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios, output = output)
   else:
     return redirect('/')
 
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-  usuarios = db.getUsers()
+  dbUsuario = db.getUser(session['usuario'])
+  usuarios = db.getUsers(dbUsuario['ID_Usuario'])
+  session['usuario'] = user
   auth = False
+  db.getPosts(dbUsuario['ID_Usuario'])
   if user == session['usuario']:
     auth = True
-    output = db.getPostByUser(user)
+    output = db.getPostByUser(dbUsuario['ID_Usuario'])
+    print (output)
+    jsonStr = json.dumps(output)
     return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, usuarios = usuarios)
   else:
     output = db.getPostByUser(user)
-    dbUser2 = db.getUser(user)
-    relacion = db.getRelacion(dbUsuario['id_usuario'], dbUser2['id_usuario'])
-    if dbUser2['Usuario'] == user:
+    dbUsuario2 = db.getUser(user)
+    relacion = db.getRelacion(dbUsuario['id_usuario'], dbUsuario2['id_usuario'])
+    if dbUsuario2['Usuario'] == user:
       usr = True
     print (relacion)
-    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUser2, usuarios = usuarios, relacion=relacion)
+    return render_template('perfil.html', usuario=dbUsuario, output=output, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion)
 
 @app.route('/agregaramigo/<user>', methods=['GET'])
 def crearAmigo(user):
@@ -129,19 +132,19 @@ def eliminarAmigo(user):
       flash('si se pudo eliminar', 'success')
       return redirect(f'/profile/{user}')
 
-@app.route('/mensajes/<user>/<receptor>', methods=['GET', 'POST'])
-def busqueda_msg(user, receptor):
-  dbUser = db.getUser(user)
-  usuarios = db.getUsers()
-  recept = db.getUser(receptor)
-  mensajes = db.getMensaje(dbUser['id_usuario'], recept['id_usuario'])
+@app.route('/mensajes/<user>/<recept>', methods=['GET', 'POST'])
+def busqueda_msg(user, recept):
+  dbUsuario = db.getUser(user)
+  usuarios = db.getUsers(dbUsuario['ID_Usuario'])
+  rece = db.getUser(recept)
+  mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
   if request.method == "POST":
     mensaje = request.form['mensaje']
-    db.addMensaje(dbUser['id_usuario'], recept['id_usuario'], mensaje )
-    return redirect(f'/mensajes/{user}/{receptor}')
+    db.addMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'], mensaje )
+    mensajes = db.getMensaje(dbUsuario['ID_Usuario'], rece['ID_Usuario'])
+    return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
   else:
-    usuarios = db.getUsers()
-    return render_template('mensajes.html', usuario=dbUser, receptor=recept, mensajes=mensajes,  usuarios = usuarios)
+    return render_template('mensajes.html', usuario=dbUsuario, receptor=rece, mensajes=mensajes,  usuarios = usuarios)
   # return render_template('')
 
 @app.route('/busqueda/<user>', methods=["GET","POST"])
@@ -168,7 +171,7 @@ def amigos(user):
   if user == session['usuario']:
   
     if request.method == 'GET':
-      resultado = db.getUsers()
+      resultado = db.getUsers(dbUsuario['ID_Usuario'])
       return render_template('amigos.html', usuario=dbUsuario, respuestas=resultado)
   else:
     return redirect('login', usuario=usr)
@@ -214,11 +217,11 @@ def admin_login():
     username = request.form['login-email']
     password = request.form['login-password']
     select = request.form['select']
-    if username == 'admin' and password == 'admin':
+    dbUsuario = db.getUser(username)
+    
+    if username == dbUsuario['Usuario'] and password == 'admin':
       session["usuario"] = 'john_tama'
-      global dbUsuario
-      dbUser = db.getUser(session["usuario"])
-      dbUsuario= dbUser
+      dbUsuario= dbUsuario
       print(dbUsuario)
       return redirect('admin/'+username)
     else:
@@ -233,7 +236,7 @@ def admin_login():
 @app.route('/admin/users', methods=['GET', 'POST'])
 def admin_users():
   if session['usuario']:
-    usuarios = db.getUsers()
+    usuarios = db.getUsers(dbUsuario['ID_Usuario'])
     return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios)
 
 @app.route('/admin/superusers', methods=['GET', 'POST'])
@@ -277,6 +280,7 @@ def Nuevo_Usuario():
     usuario = request.form['Usuario']
     password = request.form['Password']
     rpassword = request.form['Rpassword']
+    hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
     genero = request.form['Genero']
     Estado_Civil = request.form['Estado_Civil']
     email = request.form['Email']
@@ -316,7 +320,7 @@ def Nuevo_Usuario():
       error = 'Correo invalido'
       flash(error)
       return render_template('registro2.html')
-    db.addUser(usuario, password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad)
+    db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad)
     session["usuario"] = usuario
     return redirect('feed/'+session["usuario"])
 
@@ -330,6 +334,7 @@ def Nuevo_Admin():
     apellidos = request.form['Apellidos']
     usuario = request.form['Usuario']
     password = request.form['Password']
+    hash_password = bcrypt.generate_password_hash(password)
     rpassword = request.form['Rpassword']
     email = request.form['Email']
     pais = request.form['Pais']
@@ -365,7 +370,7 @@ def Nuevo_Admin():
       error = 'Correo invalido'
       flash(error)
       return render_template('createadmin.html', usuario=dbUsuario)
-    db.addAdmin(usuario, nombres, password, filename, filename, pais)
+    db.addAdmin(usuario, nombres, hash_password, filename, filename, pais)
     session["usuario"] = usuario
     return redirect('/admin/superusers')
   else:    
@@ -373,13 +378,18 @@ def Nuevo_Admin():
 
 @app.route('/updateperfil', methods=['GET', 'POST'])
 def updateperfil():
+  usuario = session['usuario']
   if request.method == 'POST':
     nombres = request.form['Nombres']
     apellidos = request.form['Apellidos']
     password = request.form['Password']
     rpassword = request.form['Rpassword']
+    hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    Estado_Civil = request.form['Estado_Civil']
     email = request.form['Email']
     pais = request.form['Pais']
+    telefono = request.form['Telefono']
+    nacimiento = request.form['FechaN']
     error = None
     if 'file' not in request.files:
             flash('No file part')
@@ -388,23 +398,44 @@ def updateperfil():
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
-        flash('No selected file', 'error')
+        flash('No selected file')
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
-    validador = valida.validarForm(password, rpassword, nombres, email)
-    if(db.updateUser(session['usuario'], nombres, password, filename, pais)):
-      return redirect('/logout')
-    else:
-      error = "No se pudo actualizar"
-      flash(error, "error")
-      return render_template('editarPerfil.html', usuario=dbUsuario)
-  else:
-    return redirect('/logout')
+    if password != rpassword:
+      error = "Las contraseñas son diferentes"
+      flash(error)
+      return redirect('editarperfil')
+
+    if not utils.isPasswordValid(password):
+      error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+      flash(error)
+      return redirect('editarperfil')
+
+    if not utils.isEmailValid(email):
+      error = 'Correo invalido'
+      flash(error)
+      return redirect('editarperfil')
+    dbUsuario = db.getUser(session['usuario'])
+    print(dbUsuario['ID_Usuario'])
+    print(usuario)
+    print(usuario)
+    print(usuario)
+    print(usuario)
+    print(dbUsuario['ID_Usuario'])
+    print(dbUsuario['ID_Usuario'])
+    print(dbUsuario['ID_Usuario'])
+    print(dbUsuario['ID_Usuario'])
+    db.updateUser(dbUsuario['ID_Usuario'], nombres, apellidos, hash_password, Estado_Civil, email, pais, filename, telefono , nacimiento)
+    session["usuario"] = usuario
+    return redirect('editarperfil')
+  else:    
+    return redirect('editarperfil')
+
 @app.route('/editarperfil', methods=['GET', 'POST'])
 def editarperfil():
-
+  dbUsuario = db.getUser(session['usuario'])
   return render_template('editarPerfil.html', usuario=dbUsuario)
 
 #DBERNAL - Recuperación de credenciales
@@ -412,12 +443,6 @@ def editarperfil():
 def RecuperaU():
     return render_template('olvidar.html', methods=('POST'))
   
-@app.route('/getmensajes')
-def getmensajes():
-    mensajes = db.getMensajes()
-    print(mensajes)
-    return render_template('olvidar.html', methods=('POST'))
-
 # @app.before_request
 # def antes_de_cada_peticion():
 #     ruta = request.path

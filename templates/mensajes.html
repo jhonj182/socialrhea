@@ -19,27 +19,27 @@
                 <div class="chat">
                     <div class="chat-content">
                         <div class="modal-header">
-                            <h6 class="modal-title" id="chat-modal-label">{{ receptor.Nombre}} <span class="online"></span></h6>
+                            <h6 class="modal-title" id="chat-modal-label">{{ receptor.Nombres}} <span class="online"></span></h6>
                         </div>
                         <div class="modal-body">
                             <ul class="chat-conversion">
                               {% for mensaje in mensajes %}
-                              {% if mensaje.remitente == usuario.id_usuario %}
+                              {% if mensaje.ID_Remitente == usuario.ID_Usuario %}
                                 <li class="chat-you">
                                     <div class="author-img">
-                                        <img src="/static/uploads/imgusuarios/{{ usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}">
+                                        <img src="/static/uploads/imgusuarios/{{ usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombres }}">
                                     </div>
                                     <div class="author-text">
-                                        <span>{{ mensaje.contenido }}</span>
+                                        <span>{{ mensaje.Mensaje }}</span>
                                     </div>
                                 </li>
                               {% else %}
                                 <li class="chat-others">
                                     <div class="author-img">
-                                        <img src="/static/uploads/imgusuarios/{{ receptor.Foto }}" width="50" height="50" alt="{{ receptor.name }}">
+                                        <img src="/static/uploads/imgusuarios/{{ receptor.Foto }}" width="50" height="50" alt="{{ receptor.Nombres }}">
                                     </div>
                                     <div class="author-text">
-                                        <span>{{ mensaje.contenido }}</span>
+                                        <span>{{ mensaje.Mensaje }}</span>
                                     </div>
                                 </li>
                                 {% endif %}
