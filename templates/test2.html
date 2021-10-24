@@ -1,0 +1,12 @@
+<h1>hola mundo</h1>
+{% if output %}
+  {% for item in output %}
+    <h1 style="color:red">{{item.post.Titulo}}</h1>
+    <h1 style="color:red">{{item.Usuario.Nombres}}</h1>
+    {% for foto in item.fotos %}
+      <img src="/static/uploads/{{foto.Ruta}}"/>
+      <h1>{{foto.ID_Foto}}</h1>
+      <h1>{{loop.index - 1}}</h1>
+    {% endfor %}
+  {% endfor %}
+{% endif %}

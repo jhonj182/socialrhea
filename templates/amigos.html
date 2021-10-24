@@ -7,15 +7,15 @@
   <!--=====================================-->
   <div class="container">
       <!-- Banner Area Start -->
-      <div class="banner-user" style="background-image: url('{{ usuario.highPic }}');background-position: center center;">
+      <div class="banner-user" style="background-image: url('https://p4.wallpaperbetter.com/wallpaper/647/427/643/landscape-desktop-downloads-wallpaper-preview.jpg');background-position: center center;">
           <div class="banner-content">
               <div class="media">
                   <div class="item-img">
-                    <img src="{{ usuario.profPic }}" width="125" height="125" alt="{{ usuario.Nombre }}">
+                    <img src="/static/uploads/imgusuarios/{{ usuario.Foto }}" width="125" height="125" alt="{{ usuario.Nombres }}">
                   </div>
                   <div class="media-body">
-                      <h3 class="item-title">{{ usuario.Nombre }}</h3>
-                      <div class="item-subtitle">{{ usuario.country }}</div>
+                      <h3 class="item-title">{{ usuario.Nombres }}</h3>
+                      <div class="item-subtitle">{{ usuario.Ubicacion }}</div>
                       <ul class="item-social">
                           <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
                           <li><a href="user-about.html#" class="bg-twitter"><i class="icofont-twitter"></i></a></li>
@@ -34,10 +34,10 @@
       </div>
       <div class="block-box user-top-header">
           <ul class="menu-list">
-              <li><a href="/profile/{{usuario.User}}">Sobre Mi</a></li>
-              <li><a href="/amigos/{{usuario.User}}">Amigos</a></li>
-              <li><a href="/fotos/{{usuario.User}}">Fotos</a></li>
-              <li><a href="/editarperfil/{{usuario.User}}">Editar Perfil</a></li>
+              <li><a href="/profile/{{usuario.Usuario}}">Sobre Mi</a></li>
+              <li><a href="/amigos/{{usuario.Usuario}}">Amigos</a></li>
+              <li><a href="/fotos/{{usuario.Usuario}}">Fotos</a></li>
+              <li><a href="/editarperfil/{{usuario.Usuario}}">Editar Perfil</a></li>
               <li>
                   <div class="dropdown">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -89,35 +89,18 @@
                       <div class="widget-author">
                           <div class="author-heading">
                               <div class="cover-img">
-                                  <img src="{{ respuesta.highPic }}" alt="cover">
+                                  <img src="{{ respuesta.Foto }}" alt="cover">
                               </div>
                               <div class="profile-img">
-                                  <a href="/">
-                                      <img src="{{ respuesta.profPic }}" width="150" height="150" alt="author">
+                                  <a href="/profile/{{respuesta.Usuario}}">
+                                      <img src="/static/uploads/imgusuarios/{{ respuesta.Foto }}" width="150" height="150" alt="author">
                                   </a>
                               </div>
                               <div class="profile-name">
-                                  <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.name}}</a></h4>
-                                  <div class="author-location">{{respuesta.country}}</div>
+                                  <h4 class="author-name"><a href="user-timeline.html">{{ respuesta.Nombres}}</a></h4>
+                                  <div class="author-location">{{respuesta.Ubicacion}}</div>
                               </div>
                           </div>
-                          <ul class="author-badge">
-                              <li><a href="/" class="bg-salmon-gradient"><i class="icofont-star"></i></a></li>
-                              <li><a href="/" class="bg-amethyst-gradient"><i class="icofont-ui-play"></i></a></li>
-                              <li><a href="/" class="bg-sun-gradient"><i class="icofont-squirrel"></i></a></li>
-                              <li><a href="/" class="bg-jungle-gradient"><i class="icofont-rocket-alt-1"></i></a></li>
-                          </ul>
-                          <ul class="author-statistics">
-                              <li>
-                                  <a href="/"><span class="item-number">30</span> <span class="item-text">POSTS</span></a>
-                              </li>
-                              <li>
-                                  <a href="/"><span class="item-number">12</span> <span class="item-text">COMMENTS</span></a>
-                              </li>
-                              <li>
-                                  <a href="/"><span class="item-number">1,125</span> <span class="item-text">VIEWS</span></a>
-                              </li>
-                          </ul>
                       </div>
                   </div>
                 {% endfor %}

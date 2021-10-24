@@ -30,43 +30,36 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Username</th>
-                                <th>Country</th>
-                                <th>Ver Perfil</th>
-                                <th>Mensaje</th>
-                                <th>Bloquear</th>
-                                <th>Eliminar</th>
+                              <th>Nombres</th>
+                              <th>Apellidos</th>
+                              <th>Username</th>
+                              <th>Pais</th>
+                              <th>Editar</th>
+                              <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Name</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
                                 <th>Username</th>
-                                <th>Country</th>
-                                <th>Ver Perfil</th>
-                                <th>Mensaje</th>
-                                <th>Bloquear</th>
+                                <th>Pais</th>
+                                <th>Editar</th>
                                 <th>Eliminar</th>
                             </tr>
                         </tfoot>
                         <tbody>
                         {% for usr in usuarios %}
                             <tr>
-                                <td>{{ usr.name }}</td>
-                                <td>{{ usr.User }}</td>
-                                <td>{{ usr.country }}</td>
+                                <td>{{ usr.Nombres }}</td>
+                                <td>{{ usr.Apellidos }}</td>
+                                <td>{{ usr.Usuario }}</td>
+                                <td>{{ usr.Ubicacion }}</td>
                                 <td>
-                                  <a href="/profile/{{ usr.User }}" class="btn btn-primary">Ver Perfil</a>
+                                  <a href="/editeuser/{{ usr.Usuario }}" class="btn btn-secondary js-delete">Editar</a>
                                 </td>
                                 <td>
-                                  <button class="btn btn-primary">Mensaje</button>
-                                </td>
-                                <td>
-                                  <button class="btn btn-secondary">Bloquear</button>
-                                </td>
-                                <td>
-                                  <a href="/deleteuser/{{ usr.User }}" class="btn btn-danger js-delete">Eliminar</a>
+                                  <a href="/deleteuser/{{ usr.Usuario }}" class="btn btn-danger js-delete">Eliminar</a>
                                 </td>
 
                               </tr>

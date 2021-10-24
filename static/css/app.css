@@ -77,12 +77,15 @@ h4,
 h5,
 h6 {
   font-family: "Nunito", sans-serif;
+  text-transform: capitalize;
   margin: 0 0 10px 0;
   font-weight: 700;
   line-height: 28px;
   color: #000000;
 }
-
+p, a, div{
+  text-transform: capitalize;
+}
 h1 {
   font-size: 46px;
   line-height: 52px;
@@ -200,7 +203,6 @@ h6 {
 
 .form-group .form-control {
   color: #111111;
-  padding: 20px;
   border-color: #d7d7d7;
   background-color: #ffffff;
   border-radius: 4px;
@@ -252,7 +254,15 @@ font-weight: 600;
 .form-group .submit-btn:focus {
   outline: none;
 }
-
+.carousel-item2 img{
+  height: 100%;
+  width: auto;
+}
+.carousel-item2{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .form-group input.form-control::-webkit-input-placeholder,
 .form-group textarea.form-control::-webkit-input-placeholder {
   color: #646464;
@@ -6647,10 +6657,21 @@ background-size:cover
       margin-bottom: 30px;
   }
 }
-
+.btn-elimina-foto {
+  position: absolute;
+  left: 31%;
+  top: 50%;
+}
+.btn-delete-post{
+  margin-top: 20px;
+  top: 0;
+}
+.post-body{
+  min-height: 400px;
+}
 .banner-user .media .item-img:after {
   
-  content: url({{ url_for('static', filename='assets/img/media/banner/round_shape1.png')}});
+  content: url("");
   position: absolute;
   top: -9px;
   left: -8px;

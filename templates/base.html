@@ -11,13 +11,19 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon.png' ) }}">
     <!-- Site Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/icofont/icofont.min.css' ) }}">
     
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
+  <!-- Site Scripts -->
+  <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-link-water">
@@ -305,8 +311,9 @@
                             <li class="chat-item chat-open">
                                 <div class="author-img">
                                   <a href="/mensajes/{{usuario.Usuario}}/{{ user.Usuario }}">
-                                    <img src="/static/uploads/imgusuarios/{{user.Foto}}" width="50" height="50" alt="{{ user.Nombre }}">
-                                    <span class="chat-status offline"></span>
+                                    <img src="/static/uploads/imgusuarios/{{user.Foto}}" width="50" height="50" alt="{{ user.Nombres }}">
+                                    <span class="chat-status online"></span>
+                                    <div>{{user.Nombres}}</div>
                                   </a>
                                 </div>
                             </li>
@@ -321,10 +328,7 @@
         {% endblock %}
   </div>
   <!-- Jquery Js -->
-  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}" defer></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}" defer></script>
-  <!-- Site Scripts -->
-  <script src="{{ url_for('static', filename='js/app.js' ) }}" defer></script>
+  
 </body>
 
 </html>

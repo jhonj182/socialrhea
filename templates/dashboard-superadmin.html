@@ -1,0 +1,99 @@
+{% extends 'dashboard-base.html' %}
+{% block contenido %}
+<div class="page-content">
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div class="container-fluid">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <ul class=flashes>
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+        </section>
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+        <p class="mb-4">Aqui encontraras la informacion de todos los usuarios administradores registrados, las Acciones como Eliminar son permanentes, manejar con precacion.</p>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Listado de Administradores</h6>
+                <br>
+                <a href="/admin/createadmin" class="btn btn-primary">Crear Administrador</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Country</th>
+                                <th>Ver Perfil</th>
+                                <th>Mensaje</th>
+                                <th>Bloquear</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Country</th>
+                                <th>Editar</th>
+                                <th>Mensaje</th>
+                                <th>Bloquear</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for usr in usuarios %}
+                            <tr>
+                                <td>{{ usr.name }}</td>
+                                <td>{{ usr.User }}</td>
+                                <td>{{ usr.country }}</td>
+                                <td>
+                                  <a href="/editadmin/{{ usr.User }}" class="btn btn-primary">Editar</a>
+                                </td>
+                                <td>
+                                  <button class="btn btn-primary">Mensaje</button>
+                                </td>
+                                <td>
+                                  <button class="btn btn-secondary">Bloquear</button>
+                                </td>
+                                <td>
+                                  <a href="/deleteadmin/{{ usr.User }}" class="btn btn-danger js-delete">Eliminar</a>
+                                </td>
+
+                              </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+              <div class="copyright text-center my-auto">
+                  <span>Copyright &copy; Social Rhea 2021</span>
+              </div>
+          </div>
+      </footer>
+      <!-- End of Footer -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+</div>
+{% endblock %}

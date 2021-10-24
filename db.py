@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3.dbapi2 import Error
 
 def conectar():
-    dbname= 'socialrhea2.db'
+    dbname= 'socialrhea.db'
     conn= sqlite3.connect(dbname)
     return conn
 
@@ -22,31 +22,6 @@ def getUser(user):
     except Error as e:
       print(f"error in getUser() : {str(e)}"  )
 
-def getFotos(Posts):
-    dResultados = {}
-    dList = []
-    for post in Posts:
-      # print(post)
-      try:
-        conn= conectar()
-        token = post['token']
-        print(token)
-        conn.row_factory = sqlite3.Row
-        sql = 'SELECT * FROM Foto WHERE token = ?'
-        cursor = conn.execute(sql, (token,))
-        resultados = (cursor.fetchall())
-        results = [ dict(row) for row in resultados ]
-        print(results)
-        dResultados = results
-        dList.append(dResultados)
-        dResultados = {}
-        conn.close()
-      except Error as e:
-        print(f"error in getFotos() : {str(e)}"  )
-      print("Las fotos son:")
-      print(dList)
-      return(dList)
-
 def getUserAdmin(user):
     conn= conectar()
     try:
@@ -54,12 +29,11 @@ def getUserAdmin(user):
       cursor= conn.execute("SELECT * FROM tbl_admin WHERE User = '"+ user +"';")
       resultados = dict(cursor.fetchone())
       if not resultados:
-        print ('Login failed')
         return False
       else:
         return resultados
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getUserAdmin() : {str(e)}"  )
     finally:
         if conn:
             cursor.close()
@@ -77,7 +51,7 @@ def getUserSuperAdmin(user):
       else:
         return resultados
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getUserSuperAdmin() : {str(e)}"  )
     finally:
         if conn:
             cursor.close()
@@ -87,26 +61,159 @@ def getUsersByName(user):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      cursor= conn.execute("SELECT * FROM tbl_Users WHERE nombre like '%"+ user +"%';")
+      cursor= conn.execute("SELECT * FROM Usuario WHERE nombres like '%"+ user +"%';")
       resultado = (cursor.fetchall())
       results = [ dict(row) for row in resultado ]
       conn.close()
       return results
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getUsersbyname() : {str(e)}"  )
 
-def getUsers(idUsuario):
+def getAmigos(idUsuario):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
+      sq = 'SELECT Amistad.ID_Recibe, Amistad.ID_Envia FROM Usuario INNER JOIN Amistad ON Amistad.ID_Envia=Usuario.ID_Usuario or Amistad.ID_Recibe=Usuario.ID_Usuario WHERE Usuario.ID_Usuario = ? and Amistad.Estado = 1'
       sql = 'SELECT * FROM Usuario WHERE rol=? AND Not ID_Usuario = ?'
-      cursor= conn.execute(sql,(2, idUsuario))
+      cursor= conn.execute(sq,(idUsuario,))
       resultado = (cursor.fetchall())
       results = [ dict(row) for row in resultado ]
+      resultados = getUsers(results, conn, idUsuario)
+      return resultados
+    except Error as e:
+      print(f"error in getUserees() : {str(e)}"  )
+
+
+def getUsers(listaAmigos, conn, idUsuario):
+    salida = []
+    try:
+      conn.row_factory = sqlite3.Row
+      for item in listaAmigos:
+        for key, value in item.items():
+          sql = 'SELECT * FROM Usuario WHERE ID_Usuario = ? AND NOT ID_Usuario = ?'
+          cursor= conn.execute(sql,(value, idUsuario))
+          resultado = (cursor.fetchone())
+          if resultado:
+            results = dict(resultado)
+            salida.append(results)
+      # results = [ dict(row) for row in resultado ]
       conn.close()
+      return salida
+    except Error as e:
+      print(f"error in getUsers() : {str(e)}"  )
+
+def getPostsFeed(idUsuario, listaAmigos):
+    conn= conectar()
+    salida = []
+    # print(listaAmigos)
+    conn.row_factory = sqlite3.Row
+    sql = 'SELECT * FROM Post WHERE ID_Usuario = ? ORDER BY ID_Post asc'
+    cursor= conn.execute(sql,(idUsuario,))
+    resultado = (cursor.fetchall())
+    if resultado:
+      results = [ dict(row) for row in resultado ]
+      salida.append(results)
+    try:
+      for item in listaAmigos:
+        for key, value in item.items():
+          if key == 'ID_Usuario':
+            sql = 'SELECT * FROM Post WHERE ID_Usuario = ? ORDER BY ID_Post asc'
+            cursor= conn.execute(sql,(value,))
+            resultado = (cursor.fetchall())
+            if resultado:
+              results = [ dict(row) for row in resultado ]
+              salida.append(results)
+              # results = [ dict(row) for row in resultado ]
+      fotos = getFotos(conn, salida)
+      return fotos
+    except Error as e:
+      print(f"error in getPostsFeed() : {str(e)}"  )
+
+def getPostsMe(idUsuario):
+    conn= conectar()
+    salida = []
+    # print(listaAmigos)
+    conn.row_factory = sqlite3.Row
+    try:
+      sql = 'SELECT * FROM Post WHERE ID_Usuario = ?'
+      cursor= conn.execute(sql,(idUsuario,))
+      resultado = (cursor.fetchall())
+      if resultado:
+        results = [ dict(row) for row in resultado ]
+        salida.append(results)
+      fotos = getFotos(conn, salida)
+      return fotos
+    except Error as e:
+      print(f"error in getPostsFeed() : {str(e)}"  )
+
+def getAllUsers():
+    conn= conectar()
+    conn.row_factory = sqlite3.Row
+    try:
+      sql = 'SELECT * FROM Usuario WHERE Rol = ?'
+      cursor= conn.execute(sql,(2,))
+      resultado = (cursor.fetchall())
+      if resultado:
+        results = [ dict(row) for row in resultado ]
       return results
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getPostsFeed() : {str(e)}"  )
+
+def getFotos(conn, salida):
+    salidaFotos = []
+    salidaPosts = {}
+    salidaPosts2 = []
+    for item1 in salida:
+      for item in item1:
+        salidaPosts['post']=(item)
+        for key, value in item.items():
+          if key == 'ID_Usuario':
+            sql = 'SELECT ID_Usuario, Nombres, Foto FROM Usuario WHERE ID_Usuario = ?'
+            cursor= conn.execute(sql,(value,))
+            resultado = (cursor.fetchone())
+            results = dict(resultado)
+            if resultado:
+              salidaPosts['Usuario']=(results)
+              # results = [ dict(row) for row in resultado ]
+          if key == 'ID_Post':
+            sql = 'SELECT ID_Foto, ID_Post, Ruta FROM Foto WHERE ID_Post = ?'
+            cursor= conn.execute(sql,(value,))
+            resultado = (cursor.fetchall())
+            results = [ dict(row) for row in resultado ]
+            if resultado:
+              salidaPosts['fotos']=(results)
+              salidaFotos.append(results)
+              # results = [ dict(row) for row in resultado ]
+              salidaPosts2.append(salidaPosts)
+              salidaPosts={}
+    conn.close()
+    return(salidaPosts2)
+# def getFotos(conn, salida):
+#     salidaFotos = []
+#     salidaPosts = {}
+#     salidaPosts2 = []
+#     for item1 in salida:
+#       for item in item1:
+#         salidaPosts['post']=(item)
+#         for key, value in item.items():
+#           if key == 'ID_Post':
+#             sql = 'SELECT * FROM Foto WHERE ID_Post = ?'
+#             cursor= conn.execute(sql,(value,))
+#             resultado = (cursor.fetchall())
+#             results = [ dict(row) for row in resultado ]
+#             if resultado:
+#               salidaPosts['fotos']=(results)
+#               print(f"/////// post {value} ////")
+#               print(salidaPosts)
+#               print(f"/////// endpost {value} ////")
+#               salidaFotos.append(results)
+#               # results = [ dict(row) for row in resultado ]
+#               salidaPosts2.append(salidaPosts)
+#     conn.close()
+#     print('salidaPosts2')
+#     print(salidaFotos)
+#     return(salidaFotos)
+
 
 def getMensaje(emisor, receptor):
     conn= conectar()
@@ -120,36 +227,36 @@ def getMensaje(emisor, receptor):
       return results
     except Error as e:
       print(f"error in getMensaje() : {str(e)}"  )
-      return("false")
+      return(False)
 
 
 def getRelacion(emisor, receptor):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      sql = 'SELECT * FROM Amistad where (id_envia = ? AND id_recibe = ?) AND (id_recibe = ? AND id_envia = ?);'
+      sql = 'SELECT * FROM Amistad where (ID_Envia = ? AND ID_Recibe = ?) or (ID_Envia = ? AND ID_Recibe = ?) ORDER BY ID_Solicitud DESC'
       cursor= conn.execute(sql, (emisor, receptor, receptor, emisor))
-      resultado = (cursor.fetchall())
-      results = [ dict(row) for row in resultado ]
+      resultado = (cursor.fetchone())
+      results = dict(resultado)
       conn.close()
       if (results):
-        return True
+        return results
       else:
         return False
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getRelacion() : {str(e)}"  )
 
-def deleteRelacion(emisor, receptor):
+def updateRelacion(emisor, receptor, estado):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      sql = 'DELETE FROM Amistad where (id_envia = ? AND id_recibe = ?)'
-      conn.execute(sql, (emisor, receptor,))
+      sql = 'UPDATE Amistad SET Estado = ? where (ID_Envia = ? AND ID_Recibe = ?)'
+      conn.execute(sql, (estado ,emisor, receptor,))
       conn.commit()
       conn.close()
       return True
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in updateRelacion() : {str(e)}"  )
       return False
 
 def getSuperUsers():
@@ -162,11 +269,10 @@ def getSuperUsers():
       conn.close()
       return results
     except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+      print(f"error in getSuperUser() : {str(e)}"  )
 
 def getPosts(idUsuario):
     try:
-      print("Esta Buscando el usuario: "+str(idUsuario))
       conn= conectar()
       conn.row_factory = sqlite3.Row
       sql = 'SELECT * FROM Foto INNER JOIN Post on Foto.ID_Post = Post.ID_Post and post.ID_Usuario = ?'
@@ -190,7 +296,6 @@ def getPostByUser(idUser):
       sql = 'SELECT * FROM Post WHERE ID_Usuario = ? ORDER BY ID_Post DESC;'
       cursor= conn.execute(sql, (idUser,))
       resultado = (cursor.fetchall())
-      print (resultado)
       resultados= [ dict(row) for row in resultado ]
       conn.close()
       return resultados
@@ -234,13 +339,11 @@ def getLastPostId(idUser):
 
 def addFoto(idUser, imagen):
     ID_Post = getLastPostId(idUser)
-    print(f"el id del post es {ID_Post}  {idUser}")
     try:
       conn=conectar()
       conn.execute("INSERT INTO Foto (ID_Post, Ruta) values(?,?);", (ID_Post, imagen))
       conn.commit()
       conn.close()
-      print(f"imagen agregada{imagen}")
       return True
     except Error as error:
       print(f"imagen no agregada{imagen}: {error}")
@@ -254,7 +357,6 @@ def addMensaje(remitente, receptor, contenido):
         conn.close()
         return True
     except Error as error:
-        print(error)
         return False
     
 def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad):
@@ -265,7 +367,6 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
         conn.execute("INSERT INTO Usuario (Usuario, Contrasena, Rol, Estado, Nombres, Apellidos, Genero, Email, Ubicacion, Foto, Telefono, Fecha_Nacimiento, Estado_Civil, Privacidad ) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);", (usuario, password, rol, estado, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad))
         conn.commit()
         conn.close()
-        print('Registro Exitoso')
         return True
     except Error as error:
         print("error en Add User:", error)
@@ -274,14 +375,13 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
 def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais, filename, telefono , nacimiento):
     try :
         conn=conectar()
-        sql = 'UPDATE Usuario  SET Contrasena = ?, Nombres = ?, Apellidos = ?, Email = ?, Ubicacion = ?, Foto = ?, Telefono = ?, Fecha_Nacimiento = ? WHERE ID_Usuario = ?'
+        sql = 'UPDATE Usuario  SET Contrasena = ?, Nombres = ?, Apellidos = ?, Email = ?, Ubicacion = ?, Foto = ?, Telefono = ?, Estado_Civil = ?, Fecha_Nacimiento = ? WHERE ID_Usuario = ?'
         conn.execute(sql, (password, nombres, apellidos, email, pais, filename, telefono, Estado_Civil, nacimiento, usuario,))
         conn.commit()
         conn.close()
-        print('Registro Exitoso')
         return True
     except Error as error:
-        print("error en Add User:", error)
+        print("error en update User:", error)
         return False
       
 def addAdmin(user, name, password, profPic, highPic, country):
@@ -299,7 +399,7 @@ def addAdmin(user, name, password, profPic, highPic, country):
 def addAmigo(envia, recibe):
     try :
         conn=conectar()
-        conn.execute("INSERT into amistad (id_envia, id_recibe) values(?,?);", (envia, recibe))
+        conn.execute("INSERT into Amistad (ID_Envia, ID_Recibe) values(?,?);", (envia, recibe))
         conn.commit()
         conn.close()
         return True
@@ -310,7 +410,7 @@ def addAmigo(envia, recibe):
 def deleteUser(user):
     try :
         conn=conectar()
-        sql = 'DELETE FROM tbl_Users WHERE User = ?'
+        sql = 'DELETE FROM Usuario WHERE Usuario = ?'
         conn.execute(sql, (user,))
         conn.commit()
         conn.close()
@@ -322,7 +422,7 @@ def deleteUser(user):
 def deleteAdmin(user):
     try :
         conn=conectar()
-        sql = 'DELETE FROM tbl_admin WHERE User = ?'
+        sql = 'DELETE FROM Usuario WHERE User = ?'
         conn.execute(sql, (user,))
         conn.commit()
         conn.close()
@@ -335,8 +435,24 @@ def deleteAdmin(user):
 def deletePost(idPost):
     try :
         conn=conectar()
-        sql = 'DELETE FROM imagenes WHERE codigo = ?'
+        sql = 'DELETE FROM Post WHERE ID_Post = ?'
         conn.execute(sql, (idPost,))
+        conn.commit()
+        conn.close()
+        return True
+    except Error as error:
+        print(error)
+        print(error)
+        print(error)
+        print(error)
+        print(error)
+        return False
+
+def deleteFoto(idFoto):
+    try :
+        conn=conectar()
+        sql = 'DELETE FROM Foto WHERE ID_Foto = ?'
+        conn.execute(sql, (idFoto,))
         conn.commit()
         conn.close()
         return True
