@@ -158,6 +158,32 @@ def getAllUsers():
       return results
     except Error as e:
       print(f"error in getPostsFeed() : {str(e)}"  )
+      
+def getAllAdmins():
+    conn= conectar()
+    conn.row_factory = sqlite3.Row
+    try:
+      sql = 'SELECT * FROM Usuario WHERE Rol = ?'
+      cursor= conn.execute(sql,(1,))
+      resultado = (cursor.fetchall())
+      if resultado:
+        results = [ dict(row) for row in resultado ]
+      return results
+    except Error as e:
+      print(f"error in getPostsFeed() : {str(e)}"  )
+
+def getAllSuperAdmins():
+    conn= conectar()
+    conn.row_factory = sqlite3.Row
+    try:
+      sql = 'SELECT * FROM Usuario WHERE Rol = ?'
+      cursor= conn.execute(sql,(0,))
+      resultado = (cursor.fetchall())
+      if resultado:
+        results = [ dict(row) for row in resultado ]
+      return results
+    except Error as e:
+      print(f"error in getPostsFeed() : {str(e)}"  )
 
 def getFotos(conn, salida):
     salidaFotos = []
@@ -359,8 +385,7 @@ def addMensaje(remitente, receptor, contenido):
     except Error as error:
         return False
     
-def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad):
-    rol = 2
+def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad, rol):
     estado = 1
     try :
         conn=conectar()
@@ -370,13 +395,25 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
         return True
     except Error as error:
         print("error en Add User:", error)
-        return False
+        return "Error," + error
       
 def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais, filename, telefono , nacimiento):
     try :
         conn=conectar()
         sql = 'UPDATE Usuario  SET Contrasena = ?, Nombres = ?, Apellidos = ?, Email = ?, Ubicacion = ?, Foto = ?, Telefono = ?, Estado_Civil = ?, Fecha_Nacimiento = ? WHERE ID_Usuario = ?'
         conn.execute(sql, (password, nombres, apellidos, email, pais, filename, telefono, Estado_Civil, nacimiento, usuario,))
+        conn.commit()
+        conn.close()
+        return True
+    except Error as error:
+        print("error en update User:", error)
+        return False
+      
+def updateUserAdmin(usuario, nombres, apellidos, Estado_Civil, email, pais, filename, telefono , nacimiento):
+    try :
+        conn=conectar()
+        sql = 'UPDATE Usuario  SET  Nombres = ?, Apellidos = ?, Email = ?, Ubicacion = ?, Foto = ?, Telefono = ?, Estado_Civil = ?, Fecha_Nacimiento = ? WHERE ID_Usuario = ?'
+        conn.execute(sql, (nombres, apellidos, email, pais, filename, telefono, Estado_Civil, nacimiento, usuario,))
         conn.commit()
         conn.close()
         return True
@@ -422,7 +459,7 @@ def deleteUser(user):
 def deleteAdmin(user):
     try :
         conn=conectar()
-        sql = 'DELETE FROM Usuario WHERE User = ?'
+        sql = 'DELETE FROM Usuario WHERE Usuario = ?'
         conn.execute(sql, (user,))
         conn.commit()
         conn.close()

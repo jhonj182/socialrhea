@@ -249,11 +249,12 @@
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
                             <li><a href="/admin/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Vista Principal"><i class="icofont-newspaper"></i></a></li>
-                            <li><a href="/profile" class="menu-link" data-toggle="tooltip" data-placement="right" title="Notificaciones"><i class="icofont-chat"></i></a></li>
                             <li><a href="/admin/users" class="menu-link" data-toggle="tooltip" data-placement="right" title="Usuarios"><i class="icofont-users-alt-2"></i></a></li>
                             {% if rol == 0 %}
-                            <li><a href="/admin/superusers" class="menu-link" data-toggle="tooltip" data-placement="right" title="Administradores"><i class="icofont-users-alt-2"></i></a></li>
+                            <li><a href="/admin/admins" class="menu-link" data-toggle="tooltip" data-placement="right" title="Administradores"><i class="icofont-users-alt-2"></i></a></li>
+                            <li><a href="/admin/superadmins" class="menu-link" data-toggle="tooltip" data-placement="right" title="Super Administradores"><i class="icofont-users-alt-2"></i></a></li>
                             {% endif %}
+                            <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -276,16 +277,20 @@
                             <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Notificaciones</span></a></li>
                             <li><a href="/admin/users" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Usuarios</span></a></li>
                             {% if rol == 0 %}
-                            <li><a href="/admin/superusers" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Administradores</span></a></li>
+                            <li><a href="/admin/admins" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Administradores</span></a></li>
+                            <li><a href="/admin/superadmins" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Super Administradores</span></a></li>
                               {% endif %}
+                              <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                         <ul class="top-menu-mobile">
                           <li><a href="/admin/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Vista Principal</span></a></li>
                           <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Notificaciones</span></a></li>
                           <li><a href="/admin/users" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Usuarios</span></a></li>
                           {% if rol == 0 %}
-                          <li><a href="/admin/superusers" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Administradores</span></a></li>
-                            {% endif %}
+                          <li><a href="/admin/admins" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Administradores</span></a></li>
+                          <li><a href="/admin/superadmins" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Super Administradores</span></a></li>
+                          {% endif %}
+                          <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                     </div>
                 </div>

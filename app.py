@@ -76,7 +76,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-  session['usuario'] = None
+  session.clear()
   return redirect("/")
 
 @app.route('/feed/<user>')
@@ -194,7 +194,7 @@ def fotos(user):
   if user == session['usuario']:
     dbUsuario = db.getUser(session['usuario'])
     output = db.getPostsMe(dbUsuario['ID_Usuario'])
-    return render_template('fotos.html', usuario=dbUsuario, respuestas=output)
+    return render_template('fotos.html', usuario=dbUsuario, respuestas=output, auth = True)
   if session['usuario']:
     dbUsuario = db.getUser(user)
     output = db.getPostsMe(dbUsuario['ID_Usuario'])
@@ -242,11 +242,16 @@ def admin_login():
   if request.method == 'POST':
     username = request.form['login-email']
     password = request.form['login-password']
-    print(username)
-    print(password)
     dbUsuario = db.getUser(username)
-    if dbUsuario['Usuario'] == username and dbUsuario['Contrasena'] == password:
+    pw_hash = dbUsuario['Contrasena']
+    check = bcrypt.check_password_hash(pw_hash, password) # returns True
+    if not dbUsuario:
+        error = "El Usuario No Existe"
+        flash(error, 'error')
+        return render_template('admin-login.html');
+    if dbUsuario and dbUsuario['Usuario'] == username and check:
       session["usuario"] = username
+      session["rol"] = dbUsuario['Rol']
       return redirect('/admin/'+username)
     else:
       error = "usuario o clave invalidos"
@@ -262,14 +267,21 @@ def admin_users():
   if session['usuario']:
     dbUsuario = db.getUser(session['usuario'])
     usuarios = db.getAllUsers()
-    return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios)
+    return render_template('dashboard-users.html', usuario=dbUsuario, usuarios=usuarios, rol = dbUsuario["Rol"])
 
-@app.route('/admin/superusers', methods=['GET', 'POST'])
-def admin_superusers():
-
+@app.route('/admin/admins', methods=['GET', 'POST'])
+def admin_admins():
   if session['usuario']:
-    usuarios = db.getSuperUsers()
-    return render_template('dashboard-superuser.html', usuario=dbUsuario, usuarios=usuarios)
+    dbUsuario = db.getUser(session['usuario'])
+    admins = db.getAllAdmins()
+    return render_template('dashboard-admin.html', usuario=dbUsuario, usuarios=admins, rol = dbUsuario["Rol"])
+
+@app.route('/admin/superadmins', methods=['GET', 'POST'])
+def admin_superadmins():
+  if session['usuario']:
+    dbUsuario = db.getUser(session['usuario'])
+    admins = db.getAllSuperAdmins()
+    return render_template('dashboard-superadmin.html', usuario=dbUsuario, usuarios=admins, rol = dbUsuario["Rol"])
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -289,12 +301,24 @@ def deleteUser(user):
 @app.route('/deleteadmin/<user>')
 def deleteAdmin(user):
   if session['usuario']:
-    if db.deleteAdmin(user):
+    if db.deleteAdmin(user) and session['rol'] == 0:
       flash('Usuario Administrador eliminado con éxito', 'success')
-      return redirect('/admin/superusers')
+      return redirect('/admin/admins')
     else:
       flash("no se pudo eliminar", 'error')
-      return redirect('/admin/superusers')
+      return redirect('/admin/admins')
+  pass
+
+
+@app.route('/deletesuperadmin/<user>')
+def deletesuperAdmin(user):
+  if session['usuario']:
+    if db.deleteAdmin(user) and session['rol'] == 0:
+      flash('Usuario Administrador eliminado con éxito', 'success')
+      return redirect('/admin/superadmins')
+    else:
+      flash("no se pudo eliminar", 'error')
+      return redirect('/admin/superadmins')
   pass
 #DBERNAL - Registro de nuevo usuario en la red social
 @app.route('/registro', methods=['GET', 'POST'])
@@ -344,64 +368,127 @@ def Nuevo_Usuario():
       error = 'Correo invalido'
       flash(error, "error")
       return render_template('registro2.html')
-    registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad)
+    registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad, 2)
     if registro:
       session["usuario"] = usuario
       return redirect('feed/'+session["usuario"])
     else:
       return "fallo registro"
-
   else:    
     return render_template('registro2.html')
 
 @app.route('/admin/createadmin', methods=['GET', 'POST'])
 def Nuevo_Admin():
+  dbUsuario = db.getUser(session['usuario'])
   if request.method == 'POST':
     nombres = request.form['Nombres']
     apellidos = request.form['Apellidos']
     usuario = request.form['Usuario']
     password = request.form['Password']
-    hash_password = bcrypt.generate_password_hash(password)
+    hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
     rpassword = request.form['Rpassword']
+    genero = request.form['Genero']
+    Estado_Civil = request.form['Estado_Civil']
     email = request.form['Email']
     pais = request.form['Pais']
+    telefono = request.form['Telefono']
+    privacidad = 1
+    nacimiento = request.form['FechaN']
     error = None
     if 'file' not in request.files:
-            flash('No file part')
+            flash('Debe subir una foto de perfil', 'error')
             return redirect(request.url)
     file = request.files['file']
     # If the user does not select a file, the browser submits an
-    # empty file without a filename.
     if file.filename == '':
-        flash('No selected file')
-        return redirect(request.url)
+        file.filename = 'favicon.png'
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
     if password != rpassword:
       error = "Las contraseñas son diferentes"
       flash(error, "error")
-      return render_template('createadmin.html', usuario=dbUsuario)
+      return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
     if not utils.isUsernameValid(usuario):
       error = "El usuario debe ser alfanumerico o incluir solo '.','_','-'"
       flash(error, "error")
-      return render_template('createadmin.html', usuario=dbUsuario)
+      return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
     if not utils.isPasswordValid(password):
       error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
       flash(error, "error")
-      return render_template('createadmin.html', usuario=dbUsuario)
+      return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
     if not utils.isEmailValid(email):
       error = 'Correo invalido'
       flash(error, "error")
-      return render_template('createadmin.html', usuario=dbUsuario)
-    db.addAdmin(usuario, nombres, hash_password, filename, filename, pais)
-    session["usuario"] = usuario
-    return redirect('/admin/superusers')
+      return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+    registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad, 1)
+    if registro:
+      flash('registro exitoso', "success")
+      return redirect('/admin/admins')
+    else:
+      return "fallo registro"
   else:    
-    return render_template('createadmin.html', usuario=dbUsuario)
+    return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+
+@app.route('/admin/createsuperadmin', methods=['GET', 'POST'])
+def Nuevo_SuperAdmin():
+  dbUsuario = db.getUser(session['usuario'])
+  if request.method == 'POST':
+    nombres = request.form['Nombres']
+    apellidos = request.form['Apellidos']
+    usuario = request.form['Usuario']
+    password = request.form['Password']
+    hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    rpassword = request.form['Rpassword']
+    genero = request.form['Genero']
+    Estado_Civil = request.form['Estado_Civil']
+    email = request.form['Email']
+    pais = request.form['Pais']
+    telefono = request.form['Telefono']
+    privacidad = 1
+    nacimiento = request.form['FechaN']
+    error = None
+    if 'file' not in request.files:
+            flash('Debe subir una foto de perfil', 'error')
+            return redirect(request.url)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    if file.filename == '':
+        file.filename = 'favicon.png'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+    if password != rpassword:
+      error = "Las contraseñas son diferentes"
+      flash(error, "error")
+      return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+
+    if not utils.isUsernameValid(usuario):
+      error = "El usuario debe ser alfanumerico o incluir solo '.','_','-'"
+      flash(error, "error")
+      return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+
+    if not utils.isPasswordValid(password):
+      error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+      flash(error, "error")
+      return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+
+    if not utils.isEmailValid(email):
+      error = 'Correo invalido'
+      flash(error, "error")
+      return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+    registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad, 0)
+    if registro:
+      flash('registro exitoso', "success")
+      return redirect('/admin/superadmins')
+    else:
+      flash(registro, "error")
+      return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
+  else:    
+    return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
 @app.route('/updateperfil', methods=['GET', 'POST'])
 def updateperfil():
@@ -455,6 +542,59 @@ def updateperfil():
 def editarperfil():
   dbUsuario = db.getUser(session['usuario'])
   return render_template('editarPerfil.html', usuario=dbUsuario)
+
+@app.route('/editarusuario/<user>', methods=['GET', 'POST'])
+def editarusuario(user):
+  dbUsuario = db.getUser(session['usuario'])
+  editable = db.getUser(user)
+  return render_template('editarusuario.html', usuario=dbUsuario, editable = editable)
+
+@app.route('/updateuser/<user>', methods=['GET', 'POST'])
+def update_user(user):
+  usuario = session['usuario']
+  if request.method == 'POST':
+    nombres = request.form['Nombres']
+    apellidos = request.form['Apellidos']
+    password = request.form['Password']
+    rpassword = request.form['Rpassword']
+    hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    Estado_Civil = request.form['Estado_Civil']
+    email = request.form['Email']
+    pais = request.form['Pais']
+    telefono = request.form['Telefono']
+    nacimiento = request.form['FechaN']
+    error = None
+    if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        flash('No selected file')
+        file.filename = 'favicon.png'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+    if password != rpassword:
+      error = "Las contraseñas son diferentes"
+      flash(error, "error")
+      return redirect(f'/editarusuario/{user}')
+
+    if not utils.isPasswordValid(password):
+      error = 'La contraseña debe contener al menos una minúscula, una mayúscula, un número y 8 caracteres'
+      flash(error, "error")
+      return redirect(f'/editarusuario/{user}')
+
+    if not utils.isEmailValid(email):
+      error = 'Correo invalido'
+      flash(error, "error")
+      return redirect(f'/editarusuario/{user}')
+    editable = db.getUser(user)
+    db.updateUser(editable['ID_Usuario'], nombres, apellidos, hash_password, Estado_Civil, email, pais, filename, telefono , nacimiento)
+    return redirect(f'/admin/{usuario}')
+  else:    
+    return redirect(f'/admin/{usuario}')
 
 #DBERNAL - Recuperación de credenciales
 @app.route('/olvidar')

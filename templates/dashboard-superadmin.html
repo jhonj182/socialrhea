@@ -23,52 +23,45 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Listado de Administradores</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Listado de Super Administradores</h6>
                 <br>
-                <a href="/admin/createadmin" class="btn btn-primary">Crear Administrador</a>
+                <a href="/admin/createsuperadmin" class="btn btn-primary">Crear Super Administrador</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Username</th>
-                                <th>Country</th>
-                                <th>Ver Perfil</th>
-                                <th>Mensaje</th>
-                                <th>Bloquear</th>
-                                <th>Eliminar</th>
+                              <th>Nombre</th>
+                              <th>Apellidos</th>
+                              <th>Username</th>
+                              <th>Pais</th>
+                              <th>Editar</th>
+                              <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Name</th>
+                                <th>Nombre</th>
+                                <th>Apellidos</th>
                                 <th>Username</th>
-                                <th>Country</th>
+                                <th>Pais</th>
                                 <th>Editar</th>
-                                <th>Mensaje</th>
-                                <th>Bloquear</th>
                                 <th>Eliminar</th>
                             </tr>
                         </tfoot>
                         <tbody>
                         {% for usr in usuarios %}
                             <tr>
-                                <td>{{ usr.name }}</td>
-                                <td>{{ usr.User }}</td>
-                                <td>{{ usr.country }}</td>
+                                <td>{{ usr.Nombres }}</td>
+                                <td>{{ usr.Apellidos }}</td>
+                                <td>{{ usr.Usuario }}</td>
+                                <td>{{ usr.Pais }}</td>
                                 <td>
-                                  <a href="/editadmin/{{ usr.User }}" class="btn btn-primary">Editar</a>
+                                  <a href="/editarusuario/{{ usr.Usuario }}" class="btn btn-primary">Editar</a>
                                 </td>
                                 <td>
-                                  <button class="btn btn-primary">Mensaje</button>
-                                </td>
-                                <td>
-                                  <button class="btn btn-secondary">Bloquear</button>
-                                </td>
-                                <td>
-                                  <a href="/deleteadmin/{{ usr.User }}" class="btn btn-danger js-delete">Eliminar</a>
+                                  <a href="/deletesuperadmin/{{ usr.Usuario }}" class="btn btn-danger js-delete">Eliminar</a>
                                 </td>
 
                               </tr>
