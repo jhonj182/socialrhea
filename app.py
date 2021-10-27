@@ -87,9 +87,8 @@ def main_page(user):
     usuarios = db.getAmigos(dbUsuario['ID_Usuario'])
     postsFeed = db.getPostsFeed(idUser, usuarios)
     print(postsFeed)
+    print(postsFeed)
     postOrdenados = postsFeed.sort(key=lambda p: p['post']['ID_Post'], reverse = True)
-    print('ORdenados')
-    print(postOrdenados)
     return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios, output = postsFeed)
     # return "helou"
   else:
@@ -608,6 +607,8 @@ def antes_de_cada_peticion():
     if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
         flash("Inicia sesión para continuar")
         return redirect("/")
+    if ruta == "/registro":
+      return redirect("/registro")
     # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 # Main

@@ -83,7 +83,6 @@ def getAmigos(idUsuario):
     except Error as e:
       print(f"error in getUserees() : {str(e)}"  )
 
-
 def getUsers(listaAmigos, conn, idUsuario):
     salida = []
     try:
