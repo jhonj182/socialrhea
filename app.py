@@ -47,7 +47,7 @@ def upload_post(user):
           arreglo = arregloImagenes.split(',')
           for imagen in arreglo:
             db.addFoto(idUser, imagen)
-          return redirect(f'/feed/{user}')
+          return redirect(f'/feed')
     else :
         return "<h1>Fallo proceso de Registro.</h1>" 
 
@@ -59,13 +59,18 @@ def login():
     username = request.form['login-email']
     password = request.form['login-password']
     dbUsuario = db.getUser(username)
-    pw_hash = dbUsuario['Contrasena']
-    check = bcrypt.check_password_hash(pw_hash, password) # returns True
-    if dbUsuario['Usuario'] == username and check :
-      session["usuario"] = username
-      return redirect('feed/'+username)
+    if dbUsuario:
+      pw_hash = dbUsuario['Contrasena']
+      check = bcrypt.check_password_hash(pw_hash, password) # returns True
+      if dbUsuario['Usuario'] == username and check :
+        session["usuario"] = username
+        return redirect('/feed')
+      else:
+        error = "usuario o clave invalidos"
+        flash(error, 'error')
+        return render_template('login.html');
     else:
-      error = "usuario o clave invalidos"
+      error = "usuario Inexistente"
       flash(error, 'error')
       return render_template('login.html');
   if request.method == 'GET':
@@ -79,15 +84,13 @@ def logout():
   session.clear()
   return redirect("/")
 
-@app.route('/feed/<user>')
-def main_page(user):
-  dbUsuario = db.getUser(user)
+@app.route('/feed')
+def main_page():
+  dbUsuario = db.getUser(session["usuario"])
   if(dbUsuario):
     idUser = dbUsuario['ID_Usuario']
     usuarios = db.getAmigos(dbUsuario['ID_Usuario'])
     postsFeed = db.getPostsFeed(idUser, usuarios)
-    print(postsFeed)
-    print(postsFeed)
     postOrdenados = postsFeed.sort(key=lambda p: p['post']['ID_Post'], reverse = True)
     return render_template('feed.html', usuario=dbUsuario, usuarios = usuarios, output = postsFeed)
     # return "helou"
@@ -101,17 +104,15 @@ def profile(user):
   auth = False
   if user == session['usuario']:
     auth = True
-    # output = db.getPostByUser(dbUsuario['ID_Usuario'])
-    # print (output)
-    # jsonStr = json.dumps(output)
-    return render_template('perfil.html', usuario=dbUsuario, auth=auth, usuarios = usuarios)
+    output = db.getPostsMe(dbUsuario['ID_Usuario'])
+    return render_template('perfil.html', usuario=dbUsuario, auth=auth, usuarios = usuarios, output=output)
   else:
     dbUsuario2 = db.getUser(user)
     relacion = db.getRelacion(dbUsuario['id_usuario'], dbUsuario2['id_usuario'])
     if dbUsuario2['Usuario'] == user:
       usr = True
-    print (relacion)
-    return render_template('perfil.html', usuario=dbUsuario, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion, usr = usr)
+    output = db.getPostsMe(dbUsuario2['ID_Usuario'])
+    return render_template('perfil.html', usuario=dbUsuario, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion, usr = usr, output = output)
 
 @app.route('/agregaramigo/<user>', methods=['GET'])
 def crearAmigo(user):
@@ -180,13 +181,13 @@ def amigo():
 @app.route('/amigos/<user>')
 def amigos(user):
   usr = []
-  dbUsuario = db.getUser(session['usuario'])
   if user == session['usuario']:
+    dbUsuario = db.getUser(session['usuario'])
     if request.method == 'GET':
       usuarios = db.getAmigos(dbUsuario['ID_Usuario'])
       return render_template('amigos.html', usuario=dbUsuario, respuestas=usuarios)
   else:
-    return redirect('login', usuario=usr)
+    return redirect('login')
 
 @app.route('/fotos/<user>', methods=['GET', 'POST'])
 def fotos(user):
@@ -242,20 +243,21 @@ def admin_login():
     username = request.form['login-email']
     password = request.form['login-password']
     dbUsuario = db.getUser(username)
-    pw_hash = dbUsuario['Contrasena']
-    check = bcrypt.check_password_hash(pw_hash, password) # returns True
-    if not dbUsuario:
-        error = "El Usuario No Existe"
+    if dbUsuario:
+      pw_hash = dbUsuario['Contrasena']
+      check = bcrypt.check_password_hash(pw_hash, password) # returns True
+      if not dbUsuario:
+          error = "El Usuario No Existe"
+          flash(error, 'error')
+          return render_template('admin-login.html');
+      if dbUsuario and dbUsuario['Usuario'] == username and check:
+        session["usuario"] = username
+        session["rol"] = dbUsuario['Rol']
+        return redirect('/admin/'+username)
+      else:
+        error = "usuario o clave invalidos"
         flash(error, 'error')
         return render_template('admin-login.html');
-    if dbUsuario and dbUsuario['Usuario'] == username and check:
-      session["usuario"] = username
-      session["rol"] = dbUsuario['Rol']
-      return redirect('/admin/'+username)
-    else:
-      error = "usuario o clave invalidos"
-      flash(error, 'error')
-      return render_template('admin-login.html');
   else:
     flash("Por favor iniciar sesion", 'error')
     return render_template('admin-login.html');
@@ -368,11 +370,12 @@ def Nuevo_Usuario():
       flash(error, "error")
       return render_template('registro2.html')
     registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad, 2)
-    if registro:
+    if registro==True:
       session["usuario"] = usuario
       return redirect('feed/'+session["usuario"])
     else:
-      return "fallo registro"
+      flash(registro, "error")
+      return redirect('/registro')
   else:    
     return render_template('registro2.html')
 
@@ -604,11 +607,9 @@ def RecuperaU():
 def antes_de_cada_peticion():
     ruta = request.path
     # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
+    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and ruta != "/registro" and not ruta.startswith("/static"):
         flash("Inicia sesión para continuar")
         return redirect("/")
-    if ruta == "/registro":
-      return redirect("/registro")
     # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 # Main

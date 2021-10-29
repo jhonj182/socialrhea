@@ -36,7 +36,9 @@
           <div class="form-group">
               <label>Ingrese Foto de Perfil</label>
               <br>
-              <input type="file" name="file" accept="image/png, .jpeg, .jpg, image/gif">
+              <div id="imagePreview" class="imagePreview"></div>
+              <br>
+              <input type="file" name="file" class="js-imginput" accept="image/png, .jpeg, .jpg, image/gif">
           </div>
           
           
@@ -52,7 +54,7 @@
 
           <div class="form-group">
               <label for="Usuario">Usuario: </label>
-              <input type="text" id="user" name="Usuario" class="form-control js-user" title="El nombre solo acepta letras y espacios en blanco" pattern="^[a-z0-9_]+$" required/>
+              <input type="text" id="user" name="Usuario" class="form-control js-user" title="El nombre solo acepta letras y espacios en blanco" required/>
             </div>
               <label>Introduzca como quiere ser conocido en la red - sin espacios.</label>
   

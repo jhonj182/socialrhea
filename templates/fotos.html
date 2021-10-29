@@ -104,7 +104,7 @@
                                       {% if auth %}
                                       <form action="/deletefoto" method="POST">
                                         <input type="hidden" name="Foto" value="{{item.ID_Foto}}">
-                                        <input type="submit" class='btn btn-danger btn-elimina-foto' value="Eliminar Foto" >
+                                        <input type="submit" class='btn btn-danger btn-elimina-foto js-delete' value="Eliminar Foto" >
                                       </form>
                                       {% endif %}
                                       <img src="/static/uploads/{{ item.Ruta }}" class="d-block w-100" alt="...">
@@ -114,7 +114,7 @@
                                     {% if auth %}
                                     <form action="/deletefoto/" method="POST">
                                       <input type="hidden" name="Foto" value="{{item.ID_Foto}}">
-                                      <input type="submit" class='btn btn-danger btn-elimina-foto' value="Eliminar Foto">
+                                      <input type="submit" class='btn btn-danger btn-elimina-foto js-delete' value="Eliminar Foto">
                                     </form>
                                     {% endif %}
                                     <img src="/static/uploads/{{ item.Ruta }}" class="d-block w-100" alt="...">
@@ -133,7 +133,7 @@
                           </div>
                       </div>
                       {% if auth %}
-                        <a href="/deletePost/{{pro.post.ID_Post}}" class="btn btn-primary btn-delete-post">Eliminar Post</a>
+                        <a href="/deletePost/{{pro.post.ID_Post}}" class="btn btn-primary btn-delete-post js-delete">Eliminar Post</a>
                       {% endif %}
                     </div>
                   {% endfor %}

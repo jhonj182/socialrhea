@@ -262,12 +262,9 @@ def getRelacion(emisor, receptor):
       sql = 'SELECT * FROM Amistad where (ID_Envia = ? AND ID_Recibe = ?) or (ID_Envia = ? AND ID_Recibe = ?) ORDER BY ID_Solicitud DESC'
       cursor= conn.execute(sql, (emisor, receptor, receptor, emisor))
       resultado = (cursor.fetchone())
-      results = dict(resultado)
+      print(resultado)
       conn.close()
-      if (results):
-        return results
-      else:
-        return False
+      return resultado
     except Error as e:
       print(f"error in getRelacion() : {str(e)}"  )
 
@@ -394,7 +391,7 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
         return True
     except Error as error:
         print("error en Add User:", error)
-        return "Error," + error
+        return f"Error en Registro, usuario o email ya existen en el sistema"
       
 def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais, filename, telefono , nacimiento):
     try :

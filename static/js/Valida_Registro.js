@@ -6,9 +6,9 @@ var $select = document.querySelector(".js-pais");
 var $flag = document.querySelector(".js-flag");
 $select.addEventListener('input', e => {
   var id = e.target.value;
-  $flag.src= `https://flagcdn.com/w20/${id}.png` ;
+  id = id.toLowerCase()
+  $flag.src= `https://flagcdn.com/w40/${id}.png` ;
 });
-
 
 function contactFormValidations(){
   const form = document.querySelector(".js-register-form"),

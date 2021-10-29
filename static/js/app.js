@@ -270,6 +270,17 @@
         });
     });
 
+const btnDelete = document.querySelectorAll('.js-delete')
+if (btnDelete) {
+  const btnArray = Array.from(btnDelete);
+  btnArray.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      if(!confirm('Esta acción no se puede deshacer!')) {
+        e.preventDefault();
+      }
+    });
+  });
+}
     /*-------------------------------------
     Section background image
     -------------------------------------*/

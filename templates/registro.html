@@ -34,8 +34,11 @@
     enctype = "multipart/form-data"
     >
         <div class="form-group">
-            <label>Ingrese Foto de Perfil</label><br>
-            <input type="file" name="file" accept="image/png, .jpeg, .jpg, image/gif">
+            <label>Ingrese Foto de Perfil</label>
+            <br>
+            <div id="imagePreview" class="imagePreview"></div>
+            <br>
+            <input type="file" class="js-imginput" name="file" accept="image/png, .jpeg, .jpg, image/gif">
         </div>
         <br>
         
