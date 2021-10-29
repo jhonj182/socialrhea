@@ -1,9 +1,7 @@
-from flask import Flask, render_template, request, redirect, flash, session, url_for, jsonify
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from flask_bcrypt import Bcrypt
-from flask.helpers import url_for
 import os
 import db
-import json
 from werkzeug.utils import secure_filename
 import utils
 import validacion as valida
@@ -11,7 +9,7 @@ from datetime import date
 from datetime import datetime
 
 UPLOAD_FOLDER = 'static/uploads'
-UPLOAD_IMG_FOLDER = 'static/uploads/imgusuarios'
+UPLOAD_IMG_FOLDER = '/home/jtamayoj182/mysite/socialrhea/socialrhea/static/uploads/imgusuarios'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
@@ -19,10 +17,11 @@ bcrypt = Bcrypt(app)
 app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-           
+
 @app.route('/upload/<user>', methods=['GET', 'POST'])
 def upload_post(user):
   if request.method == 'POST':
@@ -36,7 +35,7 @@ def upload_post(user):
     for file in files:
       filename = secure_filename(file.filename)
       try:
-          working_directory = 'static'
+          working_directory = '/home/jtamayoj182/mysite/socialrhea/socialrhea/static'
           file.save(working_directory + "/uploads/" + filename)
           filenames.append(filename)
       except FileNotFoundError :
@@ -47,9 +46,9 @@ def upload_post(user):
           arreglo = arregloImagenes.split(',')
           for imagen in arreglo:
             db.addFoto(idUser, imagen)
-          return redirect(f'/feed/{user}')
+          return redirect('/feed')
     else :
-        return "<h1>Fallo proceso de Registro.</h1>" 
+        return "<h1>Fallo proceso de Registro.</h1>"
 
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
@@ -59,19 +58,24 @@ def login():
     username = request.form['login-email']
     password = request.form['login-password']
     dbUsuario = db.getUser(username)
-    pw_hash = dbUsuario['Contrasena']
-    check = bcrypt.check_password_hash(pw_hash, password) # returns True
-    if dbUsuario['Usuario'] == username and check :
-      session["usuario"] = username
-      return redirect('feed/'+username)
+    if dbUsuario:
+      pw_hash = dbUsuario['Contrasena']
+      check = bcrypt.check_password_hash(pw_hash, password) # returns True
+      if dbUsuario['Usuario'] == username and check :
+        session["usuario"] = username
+        return redirect('/feed')
+      else:
+        error = "usuario o clave invalidos"
+        flash(error, 'error')
+        return render_template('login.html');
     else:
-      error = "usuario o clave invalidos"
+      error = "usuario Inexistente"
       flash(error, 'error')
       return render_template('login.html');
   if request.method == 'GET':
       flash("Por favor iniciar sesion", 'error')
       return render_template('login.html');
-    
+
     # return jsonify({"encontrado" : encontrado})
 
 @app.route('/logout')
@@ -79,9 +83,9 @@ def logout():
   session.clear()
   return redirect("/")
 
-@app.route('/feed/<user>')
-def main_page(user):
-  dbUsuario = db.getUser(user)
+@app.route('/feed')
+def main_page():
+  dbUsuario = db.getUser(session["usuario"])
   if(dbUsuario):
     idUser = dbUsuario['ID_Usuario']
     usuarios = db.getAmigos(dbUsuario['ID_Usuario'])
@@ -101,17 +105,15 @@ def profile(user):
   auth = False
   if user == session['usuario']:
     auth = True
-    # output = db.getPostByUser(dbUsuario['ID_Usuario'])
-    # print (output)
-    # jsonStr = json.dumps(output)
-    return render_template('perfil.html', usuario=dbUsuario, auth=auth, usuarios = usuarios)
+    output = db.getPostsMe(dbUsuario['ID_Usuario'])
+    return render_template('perfil.html', usuario=dbUsuario, auth=auth, usuarios = usuarios, output=output)
   else:
     dbUsuario2 = db.getUser(user)
     relacion = db.getRelacion(dbUsuario['id_usuario'], dbUsuario2['id_usuario'])
     if dbUsuario2['Usuario'] == user:
       usr = True
-    print (relacion)
-    return render_template('perfil.html', usuario=dbUsuario, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion, usr = usr)
+    output = db.getPostsMe(dbUsuario2['ID_Usuario'])
+    return render_template('perfil.html', usuario=dbUsuario, auth=auth, res=dbUsuario2, usuarios = usuarios, relacion=relacion, usr = usr, output = output)
 
 @app.route('/agregaramigo/<user>', methods=['GET'])
 def crearAmigo(user):
@@ -242,23 +244,25 @@ def admin_login():
     username = request.form['login-email']
     password = request.form['login-password']
     dbUsuario = db.getUser(username)
-    pw_hash = dbUsuario['Contrasena']
-    check = bcrypt.check_password_hash(pw_hash, password) # returns True
-    if not dbUsuario:
-        error = "El Usuario No Existe"
+    if dbUsuario:
+      pw_hash = dbUsuario['Contrasena']
+      check = bcrypt.check_password_hash(pw_hash, password) # returns True
+      if not dbUsuario:
+          error = "El Usuario No Existe"
+          flash(error, 'error')
+          return render_template('admin-login.html');
+      if dbUsuario and dbUsuario['Usuario'] == username and check:
+        session["usuario"] = username
+        session["rol"] = dbUsuario['Rol']
+        return redirect('/admin/'+username)
+      else:
+        error = "usuario o clave invalidos"
         flash(error, 'error')
         return render_template('admin-login.html');
-    if dbUsuario and dbUsuario['Usuario'] == username and check:
-      session["usuario"] = username
-      session["rol"] = dbUsuario['Rol']
-      return redirect('/admin/'+username)
-    else:
-      error = "usuario o clave invalidos"
-      flash(error, 'error')
-      return render_template('admin-login.html');
   else:
     flash("Por favor iniciar sesion", 'error')
     return render_template('admin-login.html');
+
 
 
 @app.route('/admin/users', methods=['GET', 'POST'])
@@ -285,7 +289,7 @@ def admin_superadmins():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-           
+
 @app.route('/deleteuser/<user>')
 def deleteUser(user):
   if session['usuario']:
@@ -344,10 +348,11 @@ def Nuevo_Usuario():
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
-        file.filename = 'favicon.png'
+        file.filename = 'favicon.jpg'
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
+        working_directory = '/home/jtamayoj182/mysite/socialrhea/socialrhea/static'
+        file.save(working_directory + "/uploads/imgusuarios/" + filename)
     if password != rpassword:
       error = "Las contraseñas son diferentes"
       flash(error, "error")
@@ -368,12 +373,12 @@ def Nuevo_Usuario():
       flash(error, "error")
       return render_template('registro2.html')
     registro = db.addUser(usuario, hash_password, nombres, apellidos, genero, email, pais, filename, telefono , nacimiento, Estado_Civil, privacidad, 2)
-    if registro:
-      session["usuario"] = usuario
-      return redirect('feed/'+session["usuario"])
+    if registro==True:
+      return redirect('/login')
     else:
-      return "fallo registro"
-  else:    
+      flash(registro, "error")
+      return redirect('/registro')
+  else:
     return render_template('registro2.html')
 
 @app.route('/admin/createadmin', methods=['GET', 'POST'])
@@ -429,7 +434,7 @@ def Nuevo_Admin():
       return redirect('/admin/admins')
     else:
       return "fallo registro"
-  else:    
+  else:
     return render_template('createadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
 @app.route('/admin/createsuperadmin', methods=['GET', 'POST'])
@@ -486,7 +491,7 @@ def Nuevo_SuperAdmin():
     else:
       flash(registro, "error")
       return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
-  else:    
+  else:
     return render_template('createsuperadmin.html', usuario=dbUsuario, rol = dbUsuario["Rol"])
 
 @app.route('/updateperfil', methods=['GET', 'POST'])
@@ -512,7 +517,7 @@ def updateperfil():
     # empty file without a filename.
     if file.filename == '':
         flash('No selected file')
-        file.filename = 'favicon.png'
+        file.filename = 'favicon.jpg'
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_IMG_FOLDER'], filename))
@@ -534,7 +539,7 @@ def updateperfil():
     db.updateUser(dbUsuario['ID_Usuario'], nombres, apellidos, hash_password, Estado_Civil, email, pais, filename, telefono , nacimiento)
     session["usuario"] = usuario
     return redirect('editarperfil')
-  else:    
+  else:
     return redirect('editarperfil')
 
 @app.route('/editarperfil', methods=['GET', 'POST'])
@@ -592,25 +597,19 @@ def update_user(user):
     editable = db.getUser(user)
     db.updateUser(editable['ID_Usuario'], nombres, apellidos, hash_password, Estado_Civil, email, pais, filename, telefono , nacimiento)
     return redirect(f'/admin/{usuario}')
-  else:    
+  else:
     return redirect(f'/admin/{usuario}')
+
+@app.before_request
+def antes_de_cada_peticion():
+    ruta = request.path
+    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
+    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and ruta != "/registro" and not ruta.startswith("/static"):
+        flash("Inicia sesión para continuar")
+        return redirect("/")
+    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
 
 #DBERNAL - Recuperación de credenciales
 @app.route('/olvidar')
 def RecuperaU():
     return render_template('olvidar.html', methods=('POST'))
-  
-@app.before_request
-def antes_de_cada_peticion():
-    ruta = request.path
-    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-    if not 'usuario' in session and ruta != "/" and ruta != "/admin-login" and ruta != "/logout" and not ruta.startswith("/static"):
-        flash("Inicia sesión para continuar")
-        return redirect("/")
-    if ruta == "/registro":
-      return redirect("/registro")
-    # Si ya ha iniciado, no hacemos nada, es decir lo dejamos pasar
-
-# Main
-if __name__=='__main__':
-    app.run(debug=True)

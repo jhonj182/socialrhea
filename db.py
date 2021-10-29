@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3.dbapi2 import Error
 
 def conectar():
-    dbname= 'socialrhea.db'
+    dbname= '/home/jtamayoj182/mysite/socialrhea/socialrhea/SocialRhea.db'
     conn= sqlite3.connect(dbname)
     return conn
 
@@ -19,8 +19,8 @@ def getUser(user):
         return False
       else:
         return resultados
-    except Error as e:
-      print(f"error in getUser() : {str(e)}"  )
+    except:
+      print("error in getUser() "  )
 
 def getUserAdmin(user):
     conn= conectar()
@@ -32,8 +32,8 @@ def getUserAdmin(user):
         return False
       else:
         return resultados
-    except Error as e:
-      print(f"error in getUserAdmin() : {str(e)}"  )
+    except:
+      print("error in getUserAdmin() "  )
     finally:
         if conn:
             cursor.close()
@@ -50,8 +50,8 @@ def getUserSuperAdmin(user):
         return False
       else:
         return resultados
-    except Error as e:
-      print(f"error in getUserSuperAdmin() : {str(e)}"  )
+    except:
+      print("error in getUserSuperAdmin() "  )
     finally:
         if conn:
             cursor.close()
@@ -66,8 +66,8 @@ def getUsersByName(user):
       results = [ dict(row) for row in resultado ]
       conn.close()
       return results
-    except Error as e:
-      print(f"error in getUsersbyname() : {str(e)}"  )
+    except:
+      print("error in getUsersbyname() "  )
 
 def getAmigos(idUsuario):
     conn= conectar()
@@ -80,8 +80,8 @@ def getAmigos(idUsuario):
       results = [ dict(row) for row in resultado ]
       resultados = getUsers(results, conn, idUsuario)
       return resultados
-    except Error as e:
-      print(f"error in getUserees() : {str(e)}"  )
+    except:
+      print("error in getUserees() "  )
 
 def getUsers(listaAmigos, conn, idUsuario):
     salida = []
@@ -98,8 +98,8 @@ def getUsers(listaAmigos, conn, idUsuario):
       # results = [ dict(row) for row in resultado ]
       conn.close()
       return salida
-    except Error as e:
-      print(f"error in getUsers() : {str(e)}"  )
+    except:
+      print("error in getUsers() "  )
 
 def getPostsFeed(idUsuario, listaAmigos):
     conn= conectar()
@@ -125,8 +125,8 @@ def getPostsFeed(idUsuario, listaAmigos):
               # results = [ dict(row) for row in resultado ]
       fotos = getFotos(conn, salida)
       return fotos
-    except Error as e:
-      print(f"error in getPostsFeed() : {str(e)}"  )
+    except:
+      print("error in getPostsFeed() "  )
 
 def getPostsMe(idUsuario):
     conn= conectar()
@@ -142,8 +142,8 @@ def getPostsMe(idUsuario):
         salida.append(results)
       fotos = getFotos(conn, salida)
       return fotos
-    except Error as e:
-      print(f"error in getPostsFeed() : {str(e)}"  )
+    except:
+      print("error in getPostsFeed() "  )
 
 def getAllUsers():
     conn= conectar()
@@ -155,9 +155,9 @@ def getAllUsers():
       if resultado:
         results = [ dict(row) for row in resultado ]
       return results
-    except Error as e:
-      print(f"error in getPostsFeed() : {str(e)}"  )
-      
+    except:
+      print("error in getPostsFeed() "  )
+
 def getAllAdmins():
     conn= conectar()
     conn.row_factory = sqlite3.Row
@@ -168,8 +168,8 @@ def getAllAdmins():
       if resultado:
         results = [ dict(row) for row in resultado ]
       return results
-    except Error as e:
-      print(f"error in getPostsFeed() : {str(e)}"  )
+    except:
+      print("error in getPostsFeed() "  )
 
 def getAllSuperAdmins():
     conn= conectar()
@@ -181,8 +181,8 @@ def getAllSuperAdmins():
       if resultado:
         results = [ dict(row) for row in resultado ]
       return results
-    except Error as e:
-      print(f"error in getPostsFeed() : {str(e)}"  )
+    except:
+      print("error in getPostsFeed() "  )
 
 def getFotos(conn, salida):
     salidaFotos = []
@@ -228,9 +228,9 @@ def getFotos(conn, salida):
 #             results = [ dict(row) for row in resultado ]
 #             if resultado:
 #               salidaPosts['fotos']=(results)
-#               print(f"/////// post {value} ////")
+#               print("/////// post {value} ////")
 #               print(salidaPosts)
-#               print(f"/////// endpost {value} ////")
+#               print("/////// endpost {value} ////")
 #               salidaFotos.append(results)
 #               # results = [ dict(row) for row in resultado ]
 #               salidaPosts2.append(salidaPosts)
@@ -250,8 +250,8 @@ def getMensaje(emisor, receptor):
       results = [ dict(row) for row in resultado ]
       conn.close()
       return results
-    except Error as e:
-      print(f"error in getMensaje() : {str(e)}"  )
+    except:
+      print("error in getMensaje() "  )
       return(False)
 
 
@@ -268,8 +268,8 @@ def getRelacion(emisor, receptor):
         return results
       else:
         return False
-    except Error as e:
-      print(f"error in getRelacion() : {str(e)}"  )
+    except:
+      print("error in getRelacion() "  )
 
 def updateRelacion(emisor, receptor, estado):
     conn= conectar()
@@ -280,8 +280,8 @@ def updateRelacion(emisor, receptor, estado):
       conn.commit()
       conn.close()
       return True
-    except Error as e:
-      print(f"error in updateRelacion() : {str(e)}"  )
+    except:
+      print("error in updateRelacion() "  )
       return False
 
 def getSuperUsers():
@@ -293,8 +293,8 @@ def getSuperUsers():
       results = [ dict(row) for row in resultado ]
       conn.close()
       return results
-    except Error as e:
-      print(f"error in getSuperUser() : {str(e)}"  )
+    except:
+      print("error in getSuperUser() "  )
 
 def getPosts(idUsuario):
     try:
@@ -311,8 +311,8 @@ def getPosts(idUsuario):
       print(resultados)
       conn.close()
       return resultados
-    except Error as e:
-      print(f"error in getPost() : {str(e)}"  )
+    except:
+      return False
 
 def getPostByUser(idUser):
     conn= conectar()
@@ -324,11 +324,10 @@ def getPostByUser(idUser):
       resultados= [ dict(row) for row in resultado ]
       conn.close()
       return resultados
-    except Error as e:
-      print(f"error in getMensaje() : {str(e)}"  )
-      return("false")
+    except:
+      return False
 
-  
+
 
 def getPostById(idPost):
     conn= conectar()
@@ -345,21 +344,20 @@ def addPost(idUser, status, Titulo,  visibilidad):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False
 
 def getLastPostId(idUser):
   conn= conectar()
-  
+
   try:
     sql = 'SELECT ID_Post FROM Post WHERE ID_Post = (SELECT MAX(ID_Post) FROM Post) AND ID_Usuario = ?; '
     cursor= conn.execute(sql, (idUser,))
     resultados= (cursor.fetchone())
     conn.close()
     return resultados[0]
-  except Error as error:
-      print(f"error en get post by iduser: {error}")
+  except:
+      print("error en get post by iduser: {error}")
       return False
 
 def addFoto(idUser, imagen):
@@ -370,8 +368,8 @@ def addFoto(idUser, imagen):
       conn.commit()
       conn.close()
       return True
-    except Error as error:
-      print(f"imagen no agregada{imagen}: {error}")
+    except:
+      print("imagen no agregada{imagen}: {error}")
       return False
 
 def addMensaje(remitente, receptor, contenido):
@@ -381,9 +379,9 @@ def addMensaje(remitente, receptor, contenido):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
+    except:
         return False
-    
+
 def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, telefono , nacimiento, Estado_Civil, privacidad, rol):
     estado = 1
     try :
@@ -392,10 +390,9 @@ def addUser(usuario, password, nombres, apellidos, genero, email, pais, Foto, te
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print("error en Add User:", error)
-        return "Error," + error
-      
+    except:
+        return False
+
 def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais, filename, telefono , nacimiento):
     try :
         conn=conectar()
@@ -404,10 +401,9 @@ def updateUser(usuario, nombres, apellidos, password, Estado_Civil, email, pais,
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print("error en update User:", error)
+    except:
         return False
-      
+
 def updateUserAdmin(usuario, nombres, apellidos, Estado_Civil, email, pais, filename, telefono , nacimiento):
     try :
         conn=conectar()
@@ -416,10 +412,9 @@ def updateUserAdmin(usuario, nombres, apellidos, Estado_Civil, email, pais, file
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print("error en update User:", error)
+    except:
         return False
-      
+
 def addAdmin(user, name, password, profPic, highPic, country):
     try :
         conn=conectar()
@@ -427,11 +422,10 @@ def addAdmin(user, name, password, profPic, highPic, country):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False
-      
-      
+
+
 def addAmigo(envia, recibe):
     try :
         conn=conectar()
@@ -439,10 +433,9 @@ def addAmigo(envia, recibe):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False
-    
+
 def deleteUser(user):
     try :
         conn=conectar()
@@ -451,8 +444,7 @@ def deleteUser(user):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False
 
 def deleteAdmin(user):
@@ -463,10 +455,9 @@ def deleteAdmin(user):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False
-    
+
 
 def deletePost(idPost):
     try :
@@ -476,12 +467,7 @@ def deletePost(idPost):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
-        print(error)
-        print(error)
-        print(error)
-        print(error)
+    except:
         return False
 
 def deleteFoto(idFoto):
@@ -492,6 +478,5 @@ def deleteFoto(idFoto):
         conn.commit()
         conn.close()
         return True
-    except Error as error:
-        print(error)
+    except:
         return False

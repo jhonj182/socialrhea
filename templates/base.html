@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css' ) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/icofont/icofont.min.css' ) }}">
-    
+
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
@@ -226,7 +226,7 @@
                                 <a href="/profile/{{ usuario.Usuario }}" class="dropdown-toggle"></button>
                                     <span class="media">
                                         <span class="item-img">
-                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}"> 
+                                            <img src="/static/uploads/imgusuarios/{{usuario.Foto }}" width="50" height="50" alt="{{ usuario.Nombre }}">
                                             <span class="acc-verified"><i class="icofont-check"></i></span>
                                         </span>
                                         <span class="media-body">
@@ -253,8 +253,7 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
-                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="MENSAJES"><i class="icofont-chat"></i></a></li>
+                            <li><a href="/feed" class="menu-link" data-toggle="tooltip" data-placement="right" title="FEED PRINCIPAL"><i class="icofont-newspaper"></i></a></li>
                             <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Mi Perfil"><i class="icofont-user"></i></a></li>
                             <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Amigos"><i class="icofont-users-alt-4"></i></a></li>
                             <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link" data-toggle="tooltip" data-placement="right" title="Publicaciones"><i class="icofont-photobucket"></i></a></li>
@@ -277,16 +276,14 @@
                 <div class="sidebar-menu-wrap">
                     <div class="mCustomScrollbar" data-mcs-theme="dark" data-mcs-axis="y">
                         <ul class="side-menu">
-                            <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                            <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                            <li><a href="/feed" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
                             <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
                             <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
                             <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
                             <li><a href="/logout" class="menu-link"><i class="icofont-logout"></i><span class="menu-title">Cerrar Sesión</span></a></li>
                         </ul>
                         <ul class="top-menu-mobile">
-                          <li><a href="/feed/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
-                          <li><a href="/mensajes/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-chat"></i><span class="menu-title">Mensajes</span></a></li>
+                          <li><a href="/feed" class="menu-link"><i class="icofont-newspaper"></i><span class="menu-title">Feed Principal</span></a></li>
                           <li><a href="/profile/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-user"></i><span class="menu-title">Mi Perfil</span></a></li>
                           <li><a href="/amigos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-users-alt-2"></i><span class="menu-title">Amigos</span></a></li>
                           <li><a href="/fotos/{{ usuario.Usuario }}" class="menu-link"><i class="icofont-photobucket"></i><span class="menu-title">Publicaciones</span></a></li>
@@ -324,11 +321,11 @@
             </div>
         </div>
         {% block contenido %}
-          
+
         {% endblock %}
   </div>
   <!-- Jquery Js -->
-  
+
 </body>
 
 </html>

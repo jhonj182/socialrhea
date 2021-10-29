@@ -23,7 +23,7 @@
           {% endfor %}
       </section>
       <div class ="container">
-  
+
       <h1>Registro de Usuario SocialRhea</h1>
       <form
       class = "js-register-form"
@@ -38,37 +38,37 @@
               <br>
               <input type="file" name="file" accept="image/png, .jpeg, .jpg, image/gif">
           </div>
-          
-          
+
+
           <div class="form-group">
               <label for="Nombres">Nombres: </label>
               <input type="text" id="Nombre" name="Nombres" class="form-control js-name" title="El nombre solo acepta letras y espacios en blanco" pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required/>
           </div>
-          
-  
+
+
           <div class="form-group">
               <label for="Apellidos">Apellidos:</label>
               <input type="text" id="apellido" name="Apellidos" class="form-control js-surname" title="El nombre solo acepta letras y espacios en blanco" pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required/></div>
 
           <div class="form-group">
               <label for="Usuario">Usuario: </label>
-              <input type="text" id="user" name="Usuario" class="form-control js-user" title="El nombre solo acepta letras y espacios en blanco" pattern="^[a-z0-9_]+$" required/>
+              <input type="text" id="user" name="Usuario" class="form-control js-user" title="El nombre solo acepta letras y espacios en blanco" required/>
             </div>
               <label>Introduzca como quiere ser conocido en la red - sin espacios.</label>
-  
+
 
           <div class="form-group">
               <label for="Password">Contraseña: </label>
               <input type="password" id="pass" name="Password" class="form-control js-pass" title="Su contraseña debe tener entre 8 y 20 caracteres, contener letras, números y caracteres especiales." pattern="^.{8,20}$" required/>
           </div>
-          
-  
+
+
           <div class="form-group">
               <label for="Rpassword">Repetir Contraseña: </label>
               <input type="password" id="Rpass" name="Rpassword" class="form-control js-repass" title="Introduzca la misma contraseña definida para verificar que esté correcta." required/>
           </div>
-          
-  
+
+
           <div class="form-group">
             <label for="Genero">Genero: </label>
             <select id="Genero" name="Genero" class="form-control js-user">
@@ -77,8 +77,8 @@
                 <option value="2">No Binario</option>
             </select>
           </div>
-          
-  
+
+
           <!--Aquí toca traer la información de la BD en una tabla que se llame estado civil-->
           <div class="form-group">
             <label for="Estado_Civil">Estado Civil: </label>
@@ -87,8 +87,8 @@
                 <option value="2">Casado</option>
             </select>
         </div>
-          
-  
+
+
 <div class="form-group">
 <label for="Email">Email: </label>
 <input type="email" id="mail" name="Email" class="form-control js-user" title="Email Incorrecto" pattern="^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required/></div>
@@ -337,8 +337,8 @@
                 <option value="ZW">Zimbabue</option>
               </select>
           </div>
-          
-  
+
+
           <!--Aquí toca traer la información de la BD en una tabla que se llame pais (campos país / ciudad / indicativo) -->
           <!--Indicativo depende del país y de la ciudad-->
           <div><label for="Telefono">Telefono: </label>
@@ -351,19 +351,19 @@
               </select>
               <input type="text" id="Telefono" name="Telefono" class="form-control js-user"/>
           </div>
-          
-  
+
+
           <div><label for="FechaN">Fecha de Nacimiento: </label>
               <input type="date" id="FechaN" name="FechaN" class="form-control js-user"/>
           </div>
-          
-  
+
+
           <div>
               <input type="checkbox" name="condiciones" required/> Declaro haber leido y
               acepto las condiciones generales del programa y la normativa sobre
               protección de datos
           </div>
-          
+
           <div class="account-create">
               <!-- <button type="submit" value="Enviar">Enviar</button> -->
               <button type="submit" class="btn btn-primary submit-btn" href="/registro">Enviar</a>
