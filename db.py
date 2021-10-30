@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3.dbapi2 import Error
-
+import os
 def conectar():
     dbname= 'socialrhea.db'
     conn= sqlite3.connect(dbname)
@@ -272,8 +272,8 @@ def updateRelacion(emisor, receptor, estado):
     conn= conectar()
     try:
       conn.row_factory = sqlite3.Row
-      sql = 'UPDATE Amistad SET Estado = ? where (ID_Envia = ? AND ID_Recibe = ?)'
-      conn.execute(sql, (estado ,emisor, receptor,))
+      sql = 'UPDATE Amistad SET Estado = ? where (ID_Envia = ? AND ID_Recibe = ?) or (ID_Envia = ? AND ID_Recibe = ?)'
+      conn.execute(sql, (estado ,emisor, receptor,receptor, emisor, ))
       conn.commit()
       conn.close()
       return True
@@ -470,16 +470,24 @@ def deletePost(idPost):
         conn=conectar()
         sql = 'DELETE FROM Post WHERE ID_Post = ?'
         conn.execute(sql, (idPost,))
+        sql2 = 'SELECT * FROM FOTO WHERE ID_Post = ?'
+        cursor = conn.execute(sql2, (idPost,))
+        resultados= list(cursor.fetchall())
+        sql3 = 'DELETE FROM FOTO WHERE ID_Post = ?'
+        conn.execute(sql3, (idPost,))
         conn.commit()
         conn.close()
+        if resultados:
+          eliminarArchivos(resultados)
         return True
     except Error as error:
-        print(error)
-        print(error)
-        print(error)
-        print(error)
-        print(error)
         return False
+
+def eliminarArchivos(resultados):
+  for item in resultados:
+    if os.path.exists(f"static/uploads/{item[7]}"):
+      print('eliminando')
+      os.remove(f"static/uploads/{item[7]}")
 
 def deleteFoto(idFoto):
     try :
@@ -492,3 +500,28 @@ def deleteFoto(idFoto):
     except Error as error:
         print(error)
         return False
+
+def deleteRelacion(user, user2):
+    try :
+        conn=conectar()
+        sql = 'DELETE FROM Amistad WHERE (ID_Envia = ? and ID_Recibe= ?) or (ID_Envia = ? and ID_Recibe= ?)'
+        conn.execute(sql, (user,user2, user2, user, ))
+        conn.commit()
+        conn.close()
+        return True
+    except Error as error:
+        print(error)
+        return False
+      
+def getNotificaciones(idUsuario):
+  try:
+      conn= conectar()
+      conn.row_factory = sqlite3.Row
+      sql = 'SELECT Nombres, Usuario, Foto FROM Usuario INNER JOIN Amistad on Usuario.ID_Usuario = Amistad.ID_Envia and Amistad.ID_Recibe = ? where Amistad.Estado = 0'
+      cursor = conn.execute(sql, (idUsuario,))
+      resultados= [ dict(row) for row in cursor ]
+      print(resultados)
+      conn.close()
+      return resultados
+  except Error as e:
+      print(f"error in getPost() : {str(e)}"  )

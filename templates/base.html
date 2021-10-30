@@ -61,7 +61,7 @@
                         <div class="inline-item d-flex align-items-center">
                           <div class="dropdown dropdown-notification">
                             <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                <i class="icofont-notification"></i><span class="notify-count">3</span>
+                                <i class="icofont-notification"></i><span class="notify-count">{{notificaciones|length}}</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <div class="item-heading">
@@ -72,36 +72,21 @@
                                     </div>
                                 </div>
                                 <div class="item-body">
-                                    <a href="#" class="media">
+                                {% if notificaciones%}
+                                {% for notificacion in notificaciones %}
+                                    <a href="/profile/{{notificacion.Usuario}}" class="media">
                                         <div class="item-img">
-                                            <img src="notifiy_1.png" alt="Notify">
+                                            <img width="40" height="40" src="/static/uploads/imgusuarios/{{notificacion.Foto}}" alt="{{notificacion.Usuario}}">
                                         </div>
                                         <div class="media-body">
-                                            <h6 class="item-title">Diana Jameson</h6>
+                                            <h6 class="item-title">{{notificacion.Nombres}}</h6>
                                             <div class="item-time">15 mins ago</div>
-                                            <p>when are nknowen printer took galley of types ...</p>
+                                            <p>Te envió una solicitud de amistad.</p>
                                         </div>
                                     </a>
-                                    <a href="#" class="media">
-                                        <div class="item-img">
-                                            <img src="notifiy_2.png" alt="Notify">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="item-title">Quirty</h6>
-                                            <div class="item-time">15 mins ago</div>
-                                            <p>when are nknowen printer took galley of types ...</p>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="media">
-                                        <div class="item-img">
-                                            <img src="notifiy_3.png" alt="Notify">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="item-title">Zinia Jessy</h6>
-                                            <div class="item-time">15 mins ago</div>
-                                            <p>when are nknowen printer took galley of types ...</p>
-                                        </div>
-                                    </a>
+
+                                {% endfor %}
+                                {% endif %}
                                 </div>
                                 <div class="item-footer">
                                     <a href="#" class="view-btn">View All Notification</a>

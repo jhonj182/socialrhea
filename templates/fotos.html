@@ -11,11 +11,20 @@
           <div class="banner-content">
               <div class="media">
                   <div class="item-img">
+                    {% if res %}
+                    <img src="/static/uploads/imgusuarios/{{ res.Foto }}" width="125" height="125" alt="{{ usuario.Nombre }}">
+                    {% else %}
                     <img src="/static/uploads/imgusuarios/{{ usuario.Foto }}" width="125" height="125" alt="{{ usuario.Nombre }}">
+                    {% endif %}
                   </div>
                   <div class="media-body">
+                    {% if res %}
+                      <h3 class="item-title">{{ res.Nombres }}</h3>
+                      <div class="item-subtitle">{{ res.Ubicacion }}</div>
+                    {% else %}
                       <h3 class="item-title">{{ usuario.Nombres }}</h3>
                       <div class="item-subtitle">{{ usuario.Ubicacion }}</div>
+                    {% endif %}
                       <ul class="item-social">
                           <li><a href="user-about.html#" class="bg-fb"><i class="icofont-facebook"></i></a></li>
                           <li><a href="user-about.html#" class="bg-twitter"><i class="icofont-twitter"></i></a></li>
@@ -33,24 +42,47 @@
           </div>
       </div>
       <div class="block-box user-top-header">
-          <ul class="menu-list">
-              <li><a href="/profile/{{usuario.User}}">Sobre Mi</a></li>
-              <li><a href="/amigos/{{usuario.User}}">Amigos</a></li>
-              <li><a href="/fotos/{{usuario.User}}">Fotos</a></li>
-              <li><a href="/editarperfil/{{usuario.User}}">Editar Perfil</a></li>
-              <li>
-                  <div class="dropdown">
-                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                          ...
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right">
-                          <a class="dropdown-item" href="user-about.html#">Shop</a>
-                          <a class="dropdown-item" href="user-about.html#">Blog</a>
-                          <a class="dropdown-item" href="user-about.html#">Others</a>
-                      </div>
-                  </div>
-              </li>
-          </ul>
+        <ul class="menu-list">
+          {% if usuario and auth %}
+            <li><a href="/profile/{{usuario.Usuario}}">Sobre Mi</a></li>
+            <li><a href="/amigos/{{usuario.Usuario}}">Amigos</a></li>
+            <li><a href="/fotos/{{usuario.Usuario}}">Fotos</a></li>
+            <li><a href="/editarperfil">Editar Perfil</a></li>
+          {% else %}
+            <li><a href="/profile/{{res.Usuario}}">Sobre Mi</a></li>
+            <li><a href="/amigos/{{res.Usuario}}">Amigos</a></li>
+            <li><a href="/fotos/{{res.Usuario}}">Fotos</a></li>
+            {% if not relacion %}
+              <li><a href="/agregaramigo/{{res.Usuario}}">Agregar a mis amigos</a></li>
+            {% endif %}
+          {% endif %}
+          {% if relacion %}
+            {% if relacion.ID_Envia == usuario.ID_Usuario and relacion.Estado == 0 %}
+            <li><a href="/eliminaramigo/{{res.Usuario}}">Cancelar Solicitud</a></li>
+            {% endif %}
+            {% if relacion.ID_Envia == res.ID_Usuario and relacion.Estado == 0 %}
+            <li><a href="/eliminaramigo/{{res.Usuario}}">Cancelar Solicitud</a></li>
+            <li><a href="/confirmaramigo/{{res.Usuario}}">Confirmar Solicitud</a></li>
+            {% endif %}
+            {% if usuario and auth and res and relacion.Estado == 0 %}
+            {% endif %}
+            {% if relacion.Estado == 1%}
+            <li><a href="/eliminaramigo/{{res.Usuario}}">Eliminar Amigo</a></li>
+            {% endif %}
+          {% endif %}
+            <li>
+                <div class="dropdown">
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        ...
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="user-about.html#">Shop</a>
+                        <a class="dropdown-item" href="user-about.html#">Blog</a>
+                        <a class="dropdown-item" href="user-about.html#">Others</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
       </div>
       <div class="container">
         <!-- Banner Area Start -->

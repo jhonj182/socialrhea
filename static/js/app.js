@@ -44,7 +44,6 @@
       event.preventDefault()
       let check = imginput.value.length;
       if (check > 0){
-        alert("paso");
         form.submit();
       }
       const test = email.value.length === 0 || emailRegExp.test(email.value);
